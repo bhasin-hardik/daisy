@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-
+import React, { useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import { useLayoutContext } from './LayoutContext';
 import img1 from '../../assets/img1.png';
 import img2 from '../../assets/img2.png';
 import img3 from '../../assets/img3.png';
@@ -8,23 +9,29 @@ import img5 from '../../assets/img5.png';
 import img6 from '../../assets/img6.png';
 
 const Layout: React.FC = () => {
+  // const history = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [submittedImageId, setSubmittedImageId] = useState<string | null>(null);
-
+  const { selectedLayout, setSelectedLayout, calculateWallsNeeded } = useLayoutContext();
+ 
   const handleImageClick = (imageId: string) => {
     if (selectedImage === imageId) {
       // If the clicked image is already selected, deselect it
       setSelectedImage(null);
+      setSelectedLayout(null);
     } else {
       // Otherwise, select the clicked image
       setSelectedImage(imageId);
+      setSelectedLayout(imageId);
     }
   };
 
   const handleSubmit = () => {
     if (selectedImage) {
       // Store the submitted image ID
+      const wallsNeeded = calculateWallsNeeded();
       setSubmittedImageId(selectedImage);
+      // history('/obstruction');
     }
   };
 
@@ -86,11 +93,7 @@ const Layout: React.FC = () => {
         </button>
 
         {/* Display the submitted image ID */}
-        {submittedImageId && (
-          <p className="mt-4 text-gray-500">
-            Submitted Image ID: {submittedImageId}
-          </p>
-        )}
+        
       </div>
     </div>
   );

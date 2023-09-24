@@ -2,6 +2,8 @@
 import React from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Layout from './components/Layout/Layout';
+import Obstruction from './components/Obstruction/Obstruction';
+import { Routes, Route } from 'react-router-dom';
 const App: React.FC = () => {
   return (
     <div>
@@ -9,6 +11,8 @@ const App: React.FC = () => {
       
       
        <Layout/>
+      <Obstruction/>
+       
       
 
     </div>
