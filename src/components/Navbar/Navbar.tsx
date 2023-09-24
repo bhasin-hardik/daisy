@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
             </svg>
             Go back
           </a>
-          {/* Add more links here */}
+          
         </div>
       </div>
     </nav>

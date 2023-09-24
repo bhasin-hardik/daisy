@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useLayoutContext } from './LayoutContext';
 import img1 from '../../assets/img1.png';
 import img2 from '../../assets/img2.png';
@@ -9,7 +9,7 @@ import img5 from '../../assets/img5.png';
 import img6 from '../../assets/img6.png';
 
 const Layout: React.FC = () => {
-  // const history = useNavigate();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [submittedImageId, setSubmittedImageId] = useState<string | null>(null);
   const { selectedLayout, setSelectedLayout, calculateWallsNeeded } = useLayoutContext();
@@ -28,10 +28,10 @@ const Layout: React.FC = () => {
 
   const handleSubmit = () => {
     if (selectedImage) {
-      // Store the submitted image ID
+      // Store the submitted image ID & calculateWalls..
       const wallsNeeded = calculateWallsNeeded();
       setSubmittedImageId(selectedImage);
-      // history('/obstruction');
+       navigate('/measurements');
     }
   };
 
