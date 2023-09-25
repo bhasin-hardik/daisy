@@ -1,6 +1,12 @@
 import React from 'react';
 import logo from '../../assets/logo.png'
+import { useNavigate } from 'react-router-dom';
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const handelBack = () => {
+    navigate(-1);
+
+  }
   return (
     <nav className="bg-white border-b-2 border-gray-200">
       <div className="container mx-auto flex justify-between items-center p-4">
@@ -9,7 +15,7 @@ const Navbar: React.FC = () => {
 
         <div className="flex space-x-4">
           {/* "Go back" link with left-pointing arrow icon and custom action */}
-          <a href="#" className="text-gray-600 hover:text-gray-800 hover:underline flex items-center">
+          <a onClick={handelBack} className="text-gray-600 hover:text-gray-800 hover:underline flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 transform -rotate-180"

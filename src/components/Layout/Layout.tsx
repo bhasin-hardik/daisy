@@ -40,7 +40,7 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex  items-center justify-center ">
       <div className="bg-white  p-8 text-center">
         {/* Heading */}
         <h1 className="text-3xl font-medium font-actor mb-2">
@@ -70,7 +70,7 @@ const Layout: React.FC = () => {
               <img
                 src={imageData.src}
                 alt={`Kitchen Layout ${imageData.id.substring(3)}`}
-                className={`w-32 h-32 border rounded-lg cursor-pointer hover:border-blue-500 ${isImageSelected(
+                className={`w-36 h-36 border rounded-lg cursor-pointer hover:border-blue-500 ${isImageSelected(
                   imageData.id
                 )}`}
               />
@@ -92,7 +92,7 @@ const Layout: React.FC = () => {
           {selectedImage ? 'Submit details' : 'Select an image'}
         </button>
 
-        {/* Display the submitted image ID */}
+        
         
       </div>
     </div>
