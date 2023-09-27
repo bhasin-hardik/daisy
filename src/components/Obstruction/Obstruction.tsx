@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import door from '../../assets/door.png';
 import windowImg from '../../assets/window.png';
 import beam from '../../assets/beam.png';
 import other from '../../assets/other.png';
+import { useLayoutContext } from '../Layout/LayoutContext';
 
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
-
+  const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
+  const numWalls = calculateWallsNeeded();
+  const { count } = useParams<{ count: string }>();
   const [doorSelected, setDoorSelected] = useState(false);
   const [windowSelected, setWindowSelected] = useState(false);
   const [beamSelected, setBeamSelected] = useState(false);
@@ -48,10 +51,37 @@ const Obstruction: React.FC = () => {
       setError('Please fill all other fields.');
       return;
     }
+   if(count){
+    const nextNumWalls = parseInt(count) + 1; // Increment the parameter
+    if (numWalls > 1) {
+      if (nextNumWalls <= numWalls) {
+        navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
+      } else {
+        navigate('/appliance/1');
+      }
+    } else {
+      navigate('/appliance/1');
+    }
 
-    // Handle any logic you need here before navigating to the next page
-    navigate('/nextPage'); // Replace '/nextPage' with the actual route you want to navigate to.
+   }
+   else{
+    navigate('/');
+   }
+    
+    
   };
+  const getWallHeading = (wallNumber: number) => {
+    const wallAlphabet = String.fromCharCode(65 + wallNumber - 1);
+    return `Wall ${wallAlphabet}`;
+  };
+
+  // Use the function to get the wall heading
+  let wallHeading;
+  if(count != undefined){
+     wallHeading = getWallHeading(parseInt(count));
+
+  }
+  
 
   const containerStyle: React.CSSProperties = {
     width: '1101px',
@@ -93,6 +123,18 @@ const Obstruction: React.FC = () => {
   const unselectedImageStyle: React.CSSProperties = {
     width: '222px',
     height: '213px',
+    marginTop: '20px',
+  };
+  const otherselectedImageStyle: React.CSSProperties = {
+    width: '222px',
+    height: '53px',
+    marginTop: '20px',
+    border: '2px solid #7F56D9',
+  };
+
+  const otherunselectedImageStyle: React.CSSProperties = {
+    width: '222px',
+    height: '53px',
     marginTop: '20px',
   };
 
@@ -155,7 +197,7 @@ const Obstruction: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white p-8 text-center" style={containerStyle}>
-        <h1 style={headingStyle}>Obstructions:</h1>
+        <h1 style={headingStyle}>Obstructions: {wallHeading}</h1>
         <p style={subheadingStyle}>Please select any obstructions on your wall.</p>
       </div>
 
@@ -167,23 +209,7 @@ const Obstruction: React.FC = () => {
             style={doorSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('door')}
           />
-          <p
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: 'Actor',
-              fontSize: '16px',
-              fontWeight: 400,
-              lineHeight: '20px',
-              letterSpacing: '-0.02em',
-              textAlign: 'center',
-              zIndex: 1,
-            }}
-          >
-            Door
-          </p>
+        
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -221,23 +247,7 @@ const Obstruction: React.FC = () => {
             style={windowSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('window')}
           />
-          <p
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: 'Actor',
-              fontSize: '16px',
-              fontWeight: 400,
-              lineHeight: '20px',
-              letterSpacing: '-0.02em',
-              textAlign: 'center',
-              zIndex: 1,
-            }}
-          >
-            Window
-          </p>
+        
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -275,23 +285,7 @@ const Obstruction: React.FC = () => {
             style={beamSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('beam')}
           />
-          <p
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: 'Actor',
-              fontSize: '16px',
-              fontWeight: 400,
-              lineHeight: '20px',
-              letterSpacing: '-0.02em',
-              textAlign: 'center',
-              zIndex: 1,
-            }}
-          >
-            Beam
-          </p>
+         
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -326,7 +320,7 @@ const Obstruction: React.FC = () => {
           <img
             src={other}
             alt="other"
-            style={otherSelected ? selectedImageStyle : unselectedImageStyle}
+            style={otherSelected ? otherselectedImageStyle : otherunselectedImageStyle}
             onClick={() => toggleImageSelection('other')}
           />
           <p
@@ -378,7 +372,7 @@ const Obstruction: React.FC = () => {
       {error && (
         <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>
       )}
-
+    
       <button
         onClick={handleSubmit}
         className="w-80 h-12 mt-4 rounded-md text-white"

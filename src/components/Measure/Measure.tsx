@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLayoutContext } from '../Layout/LayoutContext';
 import Wall from '../Wall/Wall';
 import walls from '../../assets/walls.png';
@@ -8,14 +8,25 @@ const Measure: React.FC = () => {
   const navigate = useNavigate();
   const { calculateWallsNeeded } = useLayoutContext();
   const numWalls = calculateWallsNeeded();
-  const [isFormValid, setIsFormValid] = useState(false); // State to track form validity
-  const [errorMessage, setErrorMessage] = useState(''); // State to store error message
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [validationStatus, setValidationStatus] = useState(Array(numWalls).fill(false));
+  const [errorMessage, setErrorMessage] = useState('');
+  const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1); // Track the current obstruction number
+
+  useEffect(() => {
+    setIsFormValid(validationStatus.every((valid) => valid));
+  }, [validationStatus]);
 
   const handleSubmit = () => {
-    if (isFormValid) {
-      navigate('/obstruction');
+    if (validationStatus.every((valid) => valid)) {
+      // Check if there are more walls to navigate to
+      if (currentObstructionNumber <= numWalls) {
+        // If there are more walls, increment the obstruction number and navigate
+        setCurrentObstructionNumber(currentObstructionNumber + 1);
+        navigate(`/obstruction/${currentObstructionNumber}`);
+      } 
     } else {
-      setErrorMessage('Please fill in all the input fields.'); // Set the error message
+      setErrorMessage('Please fill in all the input fields.');
     }
   };
 
@@ -24,17 +35,27 @@ const Measure: React.FC = () => {
   for (let i = 1; i <= numWalls; i++) {
     wallInputs.push(
       <div key={i}>
-        <Wall wallName={`Wall ${String.fromCharCode(65 + i - 1)}`} onValidationChange={setIsFormValid} />
+        <Wall
+          wallName={`Wall ${String.fromCharCode(65 + i - 1)}`}
+          onValidationChange={(isValid) => {
+            const newValidationStatus = [...validationStatus];
+            newValidationStatus[i - 1] = isValid;
+            setValidationStatus(newValidationStatus);
+          }}
+        />
       </div>
     );
   }
+
+
+
 
   return (
     <div className="flex items-center justify-center">
       <div
         className="bg-white p-8 text-center"
         style={{
-          maxWidth: '100%', // Set to 100% to fit within the screen
+          maxWidth: '100%',
           width: '100%',
           padding: '20px',
           display: 'flex',
@@ -62,8 +83,8 @@ const Measure: React.FC = () => {
           src={walls}
           alt="Image Description"
           style={{
-            width: '100%', // Set to 100% to fit within the screen
-            maxWidth: '584px', // Limit the maximum width if needed
+            width: '100%',
+            maxWidth: '584px',
             margin: 'auto',
           }}
         />
@@ -71,7 +92,6 @@ const Measure: React.FC = () => {
           {wallInputs}
         </div>
 
-        {/* Conditional rendering of error message */}
         {errorMessage && (
           <p className="text-red-500 mb-2">{errorMessage}</p>
         )}
