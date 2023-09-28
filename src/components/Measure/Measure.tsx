@@ -3,7 +3,7 @@ import { useLayoutContext } from '../Layout/LayoutContext';
 import Wall from '../Wall/Wall';
 import walls from '../../assets/walls.png';
 import { useNavigate } from 'react-router-dom';
-
+import { useMeasureContext } from './measureContext';
 const Measure: React.FC = () => {
   const navigate = useNavigate();
   const { calculateWallsNeeded } = useLayoutContext();
@@ -12,7 +12,7 @@ const Measure: React.FC = () => {
   const [validationStatus, setValidationStatus] = useState(Array(numWalls).fill(false));
   const [errorMessage, setErrorMessage] = useState('');
   const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1); // Track the current obstruction number
-
+  const { wallMeasurements, setWallMeasurements } = useMeasureContext();
   useEffect(() => {
     setIsFormValid(validationStatus.every((valid) => valid));
   }, [validationStatus]);
@@ -41,6 +41,12 @@ const Measure: React.FC = () => {
             const newValidationStatus = [...validationStatus];
             newValidationStatus[i - 1] = isValid;
             setValidationStatus(newValidationStatus);
+          }}
+          onMeasurementChange={(length, height) => {
+            // Update the wall measurements in the context when measurements change
+            const updatedMeasurements = [...wallMeasurements];
+            updatedMeasurements[i - 1] = { length, height };
+            setWallMeasurements(updatedMeasurements);
           }}
         />
       </div>

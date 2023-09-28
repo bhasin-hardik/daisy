@@ -5,12 +5,29 @@ import windowImg from '../../assets/window.png';
 import beam from '../../assets/beam.png';
 import other from '../../assets/other.png';
 import { useLayoutContext } from '../Layout/LayoutContext';
-
+import { useObstructionContext } from './ObstructionContext';
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
+
+ 
+  const { wallObstructionData, setObstructionError } = useObstructionContext();
   const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
+  
   const numWalls = calculateWallsNeeded();
   const { count } = useParams<{ count: string }>();
+  let wallIndex=0;
+  
+  if(count !== undefined){
+    wallIndex = parseInt(count) - 1;
+  }
+  console.log('Wall Index:', wallIndex);
+  const {
+    doorData,
+    windowData,
+    beamData,
+    otherData,
+    Obstructionerror,
+  } = wallObstructionData[wallIndex];
   const [doorSelected, setDoorSelected] = useState(false);
   const [windowSelected, setWindowSelected] = useState(false);
   const [beamSelected, setBeamSelected] = useState(false);
@@ -36,25 +53,29 @@ const Obstruction: React.FC = () => {
 
   const handleSubmit = () => {
     if (doorSelected && (!doorHeight || !doorWidth || !doorCenter)) {
+      setObstructionError('Please fill all door fields.', wallIndex);
       setError('Please fill all door fields.');
       return;
     }
     if (windowSelected && (!windowHeight || !windowWidth || !windowCenter)) {
+      setObstructionError('Please fill all window fields.', wallIndex);
       setError('Please fill all window fields.');
       return;
     }
     if (beamSelected && (!beamHeight || !beamWidth || !beamCenter)) {
+      setObstructionError('Please fill all beam fields.', wallIndex);
       setError('Please fill all beam fields.');
       return;
     }
     if (otherSelected && (!otherHeight || !otherWidth || !otherCenter)) {
+      setObstructionError('Please fill all other fields.', wallIndex);
       setError('Please fill all other fields.');
       return;
     }
    if(count){
     const nextNumWalls = parseInt(count) + 1; // Increment the parameter
     if (numWalls > 1) {
-      if (nextNumWalls <= numWalls) {
+      if (count && nextNumWalls <= numWalls){
         navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
       } else {
         navigate('/appliance/1');
@@ -155,38 +176,55 @@ const Obstruction: React.FC = () => {
     switch (obstructionType) {
       case 'door':
         setDoorSelected(!doorSelected);
+        doorData.selected= !doorData.selected;
         if (!doorSelected) {
           // If door is deselected, clear input fields
           setDoorHeight('');
           setDoorWidth('');
           setDoorCenter('');
+          doorData.height='';
+          doorData.width='';
+          doorData.center='';
         }
         break;
       case 'window':
         setWindowSelected(!windowSelected);
+        windowData.selected= !windowData.selected;
         if (!windowSelected) {
           // If window is deselected, clear input fields
           setWindowHeight('');
           setWindowWidth('');
           setWindowCenter('');
+          windowData.height='';
+          windowData.width='';
+          windowData.center='';
         }
         break;
       case 'beam':
         setBeamSelected(!beamSelected);
+        beamData.selected = !beamData.selected;
+        beamData.selected= true;
         if (!beamSelected) {
           // If beam is deselected, clear input fields
           setBeamHeight('');
           setBeamWidth('');
           setBeamCenter('');
+          beamData.height='';
+          beamData.width='';
+          beamData.center='';
         }
         break;
       case 'other':
         setOtherSelected(!otherSelected);
+        otherData.selected= !otherData.selected;
         if (!otherSelected) {
           // If other is deselected, clear input fields
           setOtherHeight('');
           setOtherWidth('');
           setOtherCenter('');
+          otherData.height='';
+          otherData.width='';
+          otherData.center='';
         }
         break;
       default:
@@ -218,7 +256,10 @@ const Obstruction: React.FC = () => {
             placeholder="Door height"
             style={inputStyle}
             value={doorHeight}
-            onChange={(e) => setDoorHeight(e.target.value)}
+            onChange={(e) => {
+              setDoorHeight(e.target.value);
+              doorData.height = e.target.value;
+            }}
           />
 
           <input
@@ -226,7 +267,11 @@ const Obstruction: React.FC = () => {
             placeholder="Door width"
             style={inputStyle}
             value={doorWidth}
-            onChange={(e) => setDoorWidth(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setDoorWidth(e.target.value);
+              doorData.width = e.target.value;
+            }}
           />
 
           <input
@@ -234,7 +279,10 @@ const Obstruction: React.FC = () => {
             placeholder="Door center"
             style={inputStyle}
             value={doorCenter}
-            onChange={(e) => setDoorCenter(e.target.value)}
+            onChange={(e) => {
+              setDoorCenter(e.target.value);
+              doorData.center = e.target.value;
+            }}
           />
         </div>
       </div>
@@ -256,7 +304,10 @@ const Obstruction: React.FC = () => {
             placeholder="Window height"
             style={inputStyle}
             value={windowHeight}
-            onChange={(e) => setWindowHeight(e.target.value)}
+            onChange={(e) => {
+              setWindowHeight(e.target.value);
+              windowData.height = e.target.value;
+            }}
           />
 
           <input
@@ -264,7 +315,10 @@ const Obstruction: React.FC = () => {
             placeholder="Window width"
             style={inputStyle}
             value={windowWidth}
-            onChange={(e) => setWindowWidth(e.target.value)}
+            onChange={(e) => {
+              setWindowWidth(e.target.value);
+              windowData.width= e.target.value;
+            }}
           />
 
           <input
@@ -272,7 +326,11 @@ const Obstruction: React.FC = () => {
             placeholder="Window center"
             style={inputStyle}
             value={windowCenter}
-            onChange={(e) => setWindowCenter(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setWindowCenter(e.target.value);
+              windowData.center = e.target.value;
+            }}
           />
         </div>
       </div>
@@ -294,7 +352,11 @@ const Obstruction: React.FC = () => {
             placeholder="Beam height"
             style={inputStyle}
             value={beamHeight}
-            onChange={(e) => setBeamHeight(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setBeamHeight(e.target.value);
+              beamData.height = e.target.value;
+            }}
           />
 
           <input
@@ -302,7 +364,11 @@ const Obstruction: React.FC = () => {
             placeholder="Beam width"
             style={inputStyle}
             value={beamWidth}
-            onChange={(e) => setBeamWidth(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setBeamWidth(e.target.value);
+              beamData.width = e.target.value;
+            }}
           />
 
           <input
@@ -310,7 +376,11 @@ const Obstruction: React.FC = () => {
             placeholder="Beam center"
             style={inputStyle}
             value={beamCenter}
-            onChange={(e) => setBeamCenter(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setBeamCenter(e.target.value);
+              beamData.center = e.target.value;
+            }}
           />
         </div>
       </div>
@@ -348,7 +418,11 @@ const Obstruction: React.FC = () => {
             placeholder="Other height"
             style={inputStyle}
             value={otherHeight}
-            onChange={(e) => setOtherHeight(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setOtherHeight(e.target.value);
+              otherData.height = e.target.value;
+            }}
           />
 
           <input
@@ -356,7 +430,11 @@ const Obstruction: React.FC = () => {
             placeholder="Other width"
             style={inputStyle}
             value={otherWidth}
-            onChange={(e) => setOtherWidth(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setOtherWidth(e.target.value);
+              otherData.width = e.target.value;
+            }}
           />
 
           <input
@@ -364,7 +442,11 @@ const Obstruction: React.FC = () => {
             placeholder="Other center"
             style={inputStyle}
             value={otherCenter}
-            onChange={(e) => setOtherCenter(e.target.value)}
+            onChange={(e) => {
+              // Update the context directly here
+              setOtherCenter(e.target.value);
+              otherData.center = e.target.value;
+            }}
           />
         </div>
       </div>
