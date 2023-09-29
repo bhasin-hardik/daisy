@@ -4,23 +4,28 @@ import door from '../../assets/door.png';
 import windowImg from '../../assets/window.png';
 import beam from '../../assets/beam.png';
 import other from '../../assets/other.png';
-import { useLayoutContext } from '../Layout/LayoutContext';
+// import { useLayoutContext } from '../Layout/LayoutContext';
 import { useObstructionContext } from './ObstructionContext';
+
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
 
- 
+
   const { wallObstructionData, setObstructionError } = useObstructionContext();
-  const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
-  
-  const numWalls = calculateWallsNeeded();
+  // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
+
+
+  const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
+
+  const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
-  let wallIndex=0;
-  
-  if(count !== undefined){
+  let wallIndex = 0;
+
+  if (count !== undefined) {
     wallIndex = parseInt(count) - 1;
   }
   console.log('Wall Index:', wallIndex);
+
   const {
     doorData,
     windowData,
@@ -51,46 +56,75 @@ const Obstruction: React.FC = () => {
 
   const [error, setError] = useState('');
 
+
   const handleSubmit = () => {
-    if (doorSelected && (!doorHeight || !doorWidth || !doorCenter)) {
-      setObstructionError('Please fill all door fields.', wallIndex);
-      setError('Please fill all door fields.');
+    setError(''); // Clear any previous error messages
+
+    const doorHeightValue = parseFloat(doorHeight);
+    const doorWidthValue = parseFloat(doorWidth);
+    const doorCenterValue = parseFloat(doorCenter);
+
+    const windowHeightValue = parseFloat(windowHeight);
+    const windowWidthValue = parseFloat(windowWidth);
+    const windowCenterValue = parseFloat(windowCenter);
+
+    const beamHeightValue = parseFloat(beamHeight);
+    const beamWidthValue = parseFloat(beamWidth);
+    const beamCenterValue = parseFloat(beamCenter);
+
+    const otherHeightValue = parseFloat(otherHeight);
+    const otherWidthValue = parseFloat(otherWidth);
+    const otherCenterValue = parseFloat(otherCenter);
+
+    const isDoorValid =
+      doorSelected && doorHeightValue >= 0 && doorWidthValue >= 0 && doorCenterValue >= 0;
+    const isWindowValid =
+      windowSelected && windowHeightValue >= 0 && windowWidthValue >= 0 && windowCenterValue >= 0;
+    const isBeamValid =
+      beamSelected && beamHeightValue >= 0 && beamWidthValue >= 0 && beamCenterValue >= 0;
+    const isOtherValid =
+      otherSelected && otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0;
+
+    if (!isDoorValid && doorSelected) {
+      setObstructionError('Please fill all door fields with positive values.', wallIndex);
+      setError('Please fill all door fields with positive values.');
       return;
     }
-    if (windowSelected && (!windowHeight || !windowWidth || !windowCenter)) {
-      setObstructionError('Please fill all window fields.', wallIndex);
-      setError('Please fill all window fields.');
+    if (!isWindowValid && windowSelected) {
+      setObstructionError('Please fill all window fields with positive values.', wallIndex);
+      setError('Please fill all window fields with positive values.');
       return;
     }
-    if (beamSelected && (!beamHeight || !beamWidth || !beamCenter)) {
-      setObstructionError('Please fill all beam fields.', wallIndex);
-      setError('Please fill all beam fields.');
+    if (!isBeamValid && beamSelected) {
+      setObstructionError('Please fill all beam fields with positive values.', wallIndex);
+      setError('Please fill all beam fields with positive values.');
       return;
     }
-    if (otherSelected && (!otherHeight || !otherWidth || !otherCenter)) {
-      setObstructionError('Please fill all other fields.', wallIndex);
-      setError('Please fill all other fields.');
+    if (!isOtherValid && otherSelected) {
+      setObstructionError('Please fill all other fields with positive values.', wallIndex);
+      setError('Please fill all other fields with positive values.');
       return;
     }
-   if(count){
-    const nextNumWalls = parseInt(count) + 1; // Increment the parameter
-    if (numWalls > 1) {
-      if (count && nextNumWalls <= numWalls){
-        navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
+
+
+    if (count) {
+
+      const nextNumWalls = parseInt(count) + 1; // Increment the parameter
+      if (numWalls > 1) {
+        if (count && nextNumWalls <= numWalls) {
+          navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
+        } else {
+          navigate('/appliance/1');
+        }
       } else {
         navigate('/appliance/1');
       }
     } else {
-      navigate('/appliance/1');
+      navigate('/');
     }
-
-   }
-   else{
-    navigate('/');
-   }
-    
-    
   };
+
+
   const getWallHeading = (wallNumber: number) => {
     const wallAlphabet = String.fromCharCode(65 + wallNumber - 1);
     return `Wall ${wallAlphabet}`;
@@ -98,11 +132,11 @@ const Obstruction: React.FC = () => {
 
   // Use the function to get the wall heading
   let wallHeading;
-  if(count != undefined){
-     wallHeading = getWallHeading(parseInt(count));
+  if (count != undefined) {
+    wallHeading = getWallHeading(parseInt(count));
 
   }
-  
+
 
   const containerStyle: React.CSSProperties = {
     width: '1101px',
@@ -176,55 +210,55 @@ const Obstruction: React.FC = () => {
     switch (obstructionType) {
       case 'door':
         setDoorSelected(!doorSelected);
-        doorData.selected= !doorData.selected;
+        doorData.selected = !doorData.selected;
         if (!doorSelected) {
           // If door is deselected, clear input fields
           setDoorHeight('');
           setDoorWidth('');
           setDoorCenter('');
-          doorData.height='';
-          doorData.width='';
-          doorData.center='';
+          doorData.height = '';
+          doorData.width = '';
+          doorData.center = '';
         }
         break;
       case 'window':
         setWindowSelected(!windowSelected);
-        windowData.selected= !windowData.selected;
+        windowData.selected = !windowData.selected;
         if (!windowSelected) {
           // If window is deselected, clear input fields
           setWindowHeight('');
           setWindowWidth('');
           setWindowCenter('');
-          windowData.height='';
-          windowData.width='';
-          windowData.center='';
+          windowData.height = '';
+          windowData.width = '';
+          windowData.center = '';
         }
         break;
       case 'beam':
         setBeamSelected(!beamSelected);
         beamData.selected = !beamData.selected;
-        beamData.selected= true;
+        beamData.selected = true;
         if (!beamSelected) {
           // If beam is deselected, clear input fields
           setBeamHeight('');
           setBeamWidth('');
           setBeamCenter('');
-          beamData.height='';
-          beamData.width='';
-          beamData.center='';
+          beamData.height = '';
+          beamData.width = '';
+          beamData.center = '';
         }
         break;
       case 'other':
         setOtherSelected(!otherSelected);
-        otherData.selected= !otherData.selected;
+        otherData.selected = !otherData.selected;
         if (!otherSelected) {
           // If other is deselected, clear input fields
           setOtherHeight('');
           setOtherWidth('');
           setOtherCenter('');
-          otherData.height='';
-          otherData.width='';
-          otherData.center='';
+          otherData.height = '';
+          otherData.width = '';
+          otherData.center = '';
         }
         break;
       default:
@@ -247,7 +281,7 @@ const Obstruction: React.FC = () => {
             style={doorSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('door')}
           />
-        
+
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -295,7 +329,7 @@ const Obstruction: React.FC = () => {
             style={windowSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('window')}
           />
-        
+
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -317,7 +351,7 @@ const Obstruction: React.FC = () => {
             value={windowWidth}
             onChange={(e) => {
               setWindowWidth(e.target.value);
-              windowData.width= e.target.value;
+              windowData.width = e.target.value;
             }}
           />
 
@@ -343,7 +377,7 @@ const Obstruction: React.FC = () => {
             style={beamSelected ? selectedImageStyle : unselectedImageStyle}
             onClick={() => toggleImageSelection('beam')}
           />
-         
+
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -454,7 +488,7 @@ const Obstruction: React.FC = () => {
       {error && (
         <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>
       )}
-    
+
       <button
         onClick={handleSubmit}
         className="w-80 h-12 mt-4 rounded-md text-white"

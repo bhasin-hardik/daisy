@@ -8,9 +8,10 @@ import { useLayoutContext } from '../Layout/LayoutContext';
 import { useApplianceContext } from './ApplianceContext';
 const Appliance: React.FC = () => {
   const navigate = useNavigate();
-  const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
+  // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
   const { wallApplianceData, setApplianceError } = useApplianceContext();
-  const numWalls = calculateWallsNeeded();
+  const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
+  const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
   let wallIndex = 0;
 
@@ -49,45 +50,93 @@ const Appliance: React.FC = () => {
   const [error, setError] = useState('');
 
   const handleSubmit = () => {
-    if (refrigeratorSelected && (!refrigeratorHeight || !refrigeratorWidth || !refrigeratorCenter)) {
-      setApplianceError('Please fill all refrigerator fields.', wallIndex);
-      setError('Please fill all refrigerator fields.');
-      return;
+    let hasError = false;
+  
+    if (refrigeratorSelected) {
+      const refrigeratorHeightValue = parseFloat(refrigeratorHeight);
+      const refrigeratorWidthValue = parseFloat(refrigeratorWidth);
+      const refrigeratorCenterValue = parseFloat(refrigeratorCenter);
+  
+      if (
+        isNaN(refrigeratorHeightValue) ||
+        isNaN(refrigeratorWidthValue) ||
+        isNaN(refrigeratorCenterValue) ||
+        refrigeratorHeightValue < 0 ||
+        refrigeratorWidthValue < 0 ||
+        refrigeratorCenterValue < 0
+      ) {
+        setApplianceError('Please enter valid positive numbers for refrigerator fields.', wallIndex);
+        setError('Please enter valid positive numbers for refrigerator fields.');
+        hasError = true;
+      }
     }
-    if (sinkSelected && (!sinkWidth || !sinkCenter)) {
-      setApplianceError('Please fill all sink fields.', wallIndex);
-      setError('Please fill all sink fields.');
-      return;
+  
+    if (sinkSelected) {
+      const sinkWidthValue = parseFloat(sinkWidth);
+      const sinkCenterValue = parseFloat(sinkCenter);
+  
+      if (
+        isNaN(sinkWidthValue) ||
+        isNaN(sinkCenterValue) ||
+        sinkWidthValue < 0 ||
+        sinkCenterValue < 0
+      ) {
+        setApplianceError('Please enter valid positive numbers for sink fields.', wallIndex);
+        setError('Please enter valid positive numbers for sink fields.');
+        hasError = true;
+      }
     }
-    if (rangeSelected && (!rangeWidth || !rangeCenter)) {
-      setApplianceError('Please fill all range fields.', wallIndex);
-      setError('Please fill all range fields.');
-      return;
+  
+    if (rangeSelected) {
+      const rangeWidthValue = parseFloat(rangeWidth);
+      const rangeCenterValue = parseFloat(rangeCenter);
+  
+      if (
+        isNaN(rangeWidthValue) ||
+        isNaN(rangeCenterValue) ||
+        rangeWidthValue < 0 ||
+        rangeCenterValue < 0
+      ) {
+        setApplianceError('Please enter valid positive numbers for range fields.', wallIndex);
+        setError('Please enter valid positive numbers for range fields.');
+        hasError = true;
+      }
     }
-    if (dishSelected && (!dishWidth || !dishCenter)) {
-      setApplianceError('Please fill all dish fields.', wallIndex);
-      setError('Please fill all dish fields.');
-      return;
+  
+    if (dishSelected) {
+      const dishWidthValue = parseFloat(dishWidth);
+      const dishCenterValue = parseFloat(dishCenter);
+  
+      if (
+        isNaN(dishWidthValue) ||
+        isNaN(dishCenterValue) ||
+        dishWidthValue < 0 ||
+        dishCenterValue < 0
+      ) {
+        setApplianceError('Please enter valid positive numbers for dish fields.', wallIndex);
+        setError('Please enter valid positive numbers for dish fields.');
+        hasError = true;
+      }
     }
-    if (count) {
-      const nextNumWalls = parseInt(count) + 1; // Increment the parameter
-      if (numWalls > 1) {
-        if (nextNumWalls <= numWalls) {
-          navigate(`/appliance/${nextNumWalls}`); // Navigate to the next Obstruction component
+  
+    if (!hasError) {
+      if (count) {
+        const nextNumWalls = parseInt(count) + 1; // Increment the parameter
+        if (numWalls > 1) {
+          if (nextNumWalls <= numWalls) {
+            navigate(`/appliance/${nextNumWalls}`); // Navigate to the next Obstruction component
+          } else {
+            navigate('/cabinet');
+          }
         } else {
           navigate('/cabinet');
         }
       } else {
         navigate('/cabinet');
       }
-
     }
-    else {
-      navigate('/cabinet');
-    }
-
-
   };
+  
   const getWallHeading = (wallNumber: number) => {
     const wallAlphabet = String.fromCharCode(65 + wallNumber - 1);
     return `Wall ${wallAlphabet}`;

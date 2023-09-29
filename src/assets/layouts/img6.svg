@@ -1,0 +1,13 @@
+<svg width="193" height="192" viewBox="0 0 193 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0.5 7C0.5 3.134 3.63401 0 7.5 0H185.5C189.366 0 192.5 3.13401 192.5 7V185C192.5 188.866 189.366 192 185.5 192H7.5C3.634 192 0.5 188.866 0.5 185V7Z" fill="#F9FAFB"/>
+<path d="M157 40H44.5C42.2909 40 40.5 41.7909 40.5 44V64.5C40.5 66.7091 42.2909 68.5 44.5 68.5H125C127.209 68.5 129 70.2909 129 72.5V147C129 149.209 130.791 151 133 151H157C159.209 151 161 149.209 161 147V44C161 41.7909 159.209 40 157 40Z" stroke="#615D5A" stroke-width="2"/>
+<rect x="67.5" y="140" width="53" height="32" rx="3" transform="rotate(-90 67.5 140)" stroke="#615D5A" stroke-width="2"/>
+<rect x="46.5" y="45" width="28" height="28" rx="3" fill="#F9FAFB" stroke="#615D5A" stroke-width="2"/>
+<rect x="95.5" y="101" width="21" height="16" rx="3" transform="rotate(90 95.5 101)" stroke="#615D5A" stroke-width="2"/>
+<circle cx="87.5" cy="111.5" r="1.125" transform="rotate(90 87.5 111.5)" stroke="#615D5A" stroke-width="0.75"/>
+<rect x="134.5" y="122" width="24" height="21" rx="3" transform="rotate(-90 134.5 122)" stroke="#615D5A" stroke-width="2"/>
+<circle cx="140" cy="105" r="3.125" transform="rotate(-90 140 105)" stroke="#615D5A" stroke-width="0.75"/>
+<circle cx="150" cy="105" r="3.125" transform="rotate(-90 150 105)" stroke="#615D5A" stroke-width="0.75"/>
+<circle cx="140" cy="115" r="3.125" transform="rotate(-90 140 115)" stroke="#615D5A" stroke-width="0.75"/>
+<circle cx="150" cy="115" r="3.125" transform="rotate(-90 150 115)" stroke="#615D5A" stroke-width="0.75"/>
+</svg>

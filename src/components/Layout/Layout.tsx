@@ -7,10 +7,17 @@ import img3 from '../../assets/img3.png';
 import img4 from '../../assets/img4.png';
 import img5 from '../../assets/img5.png';
 import img6 from '../../assets/img6.png';
+const getSelectedImageFromLocalStorage = () => {
+  return localStorage.getItem('selectedImage');
+};
+
+const setSelectedImageInLocalStorage = (imageId: string) => {
+  localStorage.setItem('selectedImage', imageId);
+};
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(getSelectedImageFromLocalStorage());
   const [submittedImageId, setSubmittedImageId] = useState<string | null>(null);
   const { selectedLayout, setSelectedLayout, calculateWallsNeeded } = useLayoutContext();
  
@@ -24,16 +31,35 @@ const Layout: React.FC = () => {
       setSelectedImage(imageId);
       setSelectedLayout(imageId);
     }
+    setSelectedImageInLocalStorage(imageId);
   };
 
   const handleSubmit = () => {
     if (selectedImage) {
-      // Store the submitted image ID & calculateWalls..
+      // Calculate wallsNeeded
       const wallsNeeded = calculateWallsNeeded();
-      setSubmittedImageId(selectedImage);
-       navigate('/measurements');
+
+      // Check if wallsNeeded is not null before storing it
+      if (wallsNeeded !== null) {
+        setSubmittedImageId(selectedImage);
+
+        // Store wallsNeeded in local storage
+        localStorage.setItem('wallsNeeded', JSON.stringify(wallsNeeded));
+      }
+
+      navigate('/measurements');
     }
   };
+
+  // ...
+
+
+
+
+
+
+
+
 
   const isImageSelected = (imageId: string) => {
     return selectedImage === imageId ? 'border-blue-500' : 'border-gray-200';

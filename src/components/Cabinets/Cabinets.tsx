@@ -7,6 +7,7 @@ import cab4 from '../../assets/cab4.png';
 import a from '../../assets/a.png';
 import b from '../../assets/b.png';
 import either from '../../assets/either.png';
+
 import { useCabinetsContext } from './CabinetsContext';
 
 const Cabinets: React.FC = () => {
@@ -26,7 +27,7 @@ const Cabinets: React.FC = () => {
 
     // If the current selection is the same as the clicked image, deselect it
     if (currentSelection === image) {
-      
+
       toggleSelectionForCabinet(cabinet, ''); // You can use null or any other value to represent no selection
     } else {
       toggleSelectionForCabinet(cabinet, image);
@@ -41,7 +42,7 @@ const Cabinets: React.FC = () => {
   const handleSubmit = () => {
     navigate('/overview');
   }
-  
+
   // Define your cabinet and image data
   const cabinets = [
     { name: 'cabinet1', image: cab1 },
@@ -55,6 +56,38 @@ const Cabinets: React.FC = () => {
     { name: 'b', label: 'Image B' },
     { name: 'either', label: 'Either' },
   ];
+  const gridContainerStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr', // Two columns
+    gridTemplateRows: 'auto auto', // Two rows
+    gap: '20px', // Adjust the gap as needed
+    maxWidth: '100%', // Adjust as needed for your design
+    margin: '0 auto', // Center the content horizontally
+    marginTop: '35px',
+    padding: '0 20px', // Add responsive padding
+  };
+  const layoutBoxStyle: React.CSSProperties = {
+    width: '295px',
+    height: '58px',
+    margin: '20px 0', // Add responsive margin
+    display: 'flex',
+    flexDirection: 'column',
+
+    justifyContent: 'center',
+    backgroundColor: '#f9fafb',
+  };
+
+
+  const layoutTextStyle: React.CSSProperties = {
+
+    fontSize: '16px',
+    fontWeight: 400,
+    lineHeight: '20px',
+    letterSpacing: '-0.02em',
+    textAlign: 'left',
+    margin: '8px', // Add margin for spacing
+    opacity: 0.6,
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -63,6 +96,7 @@ const Cabinets: React.FC = () => {
           <div style={{ width: '449px', height: '52px', background: 'none', fontFamily: 'Actor', fontSize: '30px', fontWeight: 400, lineHeight: '36px', letterSpacing: '-0.02em', textAlign: 'center' }}>Specialty Cabinets:</div>
           <div style={{ width: '426px', height: '36px', background: 'none', fontFamily: 'Actor', fontSize: '18px', fontWeight: 400, lineHeight: '26px', letterSpacing: '-0.02em', textAlign: 'center', color: '#656362' }}>Please select any specialty cabinets you would like to add to your kitchen.</div>
         </div>
+       
         <div style={{ width: '137px', height: '21px', marginTop: '70px', top: '365px', left: '475px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Specialty Cabinet</div>
         <div style={{ width: '105px', height: '21px', marginTop: '70px', top: '365px', left: '871px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Wall preference</div>
 

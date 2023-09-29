@@ -16,8 +16,8 @@ export const LayoutProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         img2: 2,
         img3: 2,
         img4: 3,
-        img5: 1,
-        img6: 2,
+        img5: 2,
+        img6: 3,
       // Add more mappings as needed
     };
 
