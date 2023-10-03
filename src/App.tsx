@@ -4,7 +4,7 @@ import Navbar from './components/Navbar/Navbar';
 import Layout from './components/Layout/Layout';
 import Obstruction from './components/Obstruction/Obstruction';
 import Measure from './components/Measure/Measure';
-import { LayoutProvider } from './components/Layout/LayoutContext';
+
 import { MeasureProvider } from './components/Measure/measureContext';
 import { ObstructionProvider } from './components/Obstruction/ObstructionContext';
 
@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <LayoutProvider>
+      
         <MeasureProvider >
           <ObstructionProvider > {/* Wrap Obstruction with ObstructionProvider */}
             <ApplianceProvider>
@@ -32,13 +32,14 @@ const App: React.FC = () => {
                     <Route path="/appliance/:count" element={<Appliance />} />
                     <Route path="/cabinet" element={<Cabinets />} />
                     <Route path="/overview" element={<Overview />} />
+                    
                   </Routes>
                 </div>
               </CabinetsProvider>
             </ApplianceProvider>
           </ObstructionProvider>
         </MeasureProvider>
-      </LayoutProvider>
+      
     </Router>
   );
 };

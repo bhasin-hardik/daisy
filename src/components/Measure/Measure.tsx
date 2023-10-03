@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { useLayoutContext } from '../Layout/LayoutContext';
 import Wall from '../Wall/Wall';
 import walls from '../../assets/walls.png';
 import { useNavigate } from 'react-router-dom';
 import { useMeasureContext } from './measureContext';
-
+type WallMeasurements = {
+  length: number;
+  height: number;
+};
 const Measure: React.FC = () => {
   const navigate = useNavigate();
-  const { calculateWallsNeeded } = useLayoutContext();
-  const numWalls = calculateWallsNeeded();
+  
+  
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
   const [isFormValid, setIsFormValid] = useState(false);
-  const [validationStatus, setValidationStatus] = useState(Array(wallsNeededFromStorage).fill(false));
+  const [validationStatus, setValidationStatus] = useState(() => {
+    const initialValidationStatus = Array(wallsNeededFromStorage).fill(false);
+    for (let i = 1; i <= wallsNeededFromStorage; i++) {
+      const localStorageKey = `wallMeasurements_${i}`;
+      const storedMeasurements = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+      if (storedMeasurements.length >= 0 && storedMeasurements.height >= 0) {
+        initialValidationStatus[i - 1] = true;
+      }
+    }
+    return initialValidationStatus;
+  });
+  
   const [errorMessage, setErrorMessage] = useState('');
-  const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1); // Track the current obstruction number
-  // Storing data
-
-
-
-
+  const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1); // Track the current 
   const { wallMeasurements, setWallMeasurements } = useMeasureContext();
-
   useEffect(() => {
     setIsFormValid(validationStatus.every((valid) => valid));
   }, [validationStatus]);
-
+  const saveWallMeasurementsToLocalStorage = (wallIndex: number,measurements : WallMeasurements) => {
+    localStorage.setItem(`wallMeasurements_${wallIndex+1}`, JSON.stringify(measurements));
+  };
   const handleSubmit = () => {
     if (validationStatus.every((valid) => valid)) {
       // Check if there are more walls to navigate to
@@ -35,8 +44,6 @@ const Measure: React.FC = () => {
         if (currentObstructionNumber <= wallsNeededFromStorage) {
           // Save the measurements for the current wall in local storage
           const currentWallMeasurements = wallMeasurements[currentObstructionNumber - 1];
-          localStorage.setItem(`wallMeasurements${currentObstructionNumber}`, JSON.stringify(currentWallMeasurements));
-
           setCurrentObstructionNumber(currentObstructionNumber + 1);
           navigate(`/obstruction/${currentObstructionNumber}`);
         }
@@ -45,17 +52,25 @@ const Measure: React.FC = () => {
       setErrorMessage('Please fill in all the input fields.');
     }
   };
-
-  console.log(wallsNeededFromStorage);
-
-  const wallInputs = [];
+  
  
 
+  
+
+  const wallInputs = [];
+
+
   for (let i = 1; i <= wallsNeededFromStorage; i++) {
+    const localStorageKey = `wallMeasurements_${i}`;
+    const storedMeasurements = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+    const [length, setLength] = useState<number | ''>(storedMeasurements.length || '');
+    const [height, setHeight] = useState<number | ''>(storedMeasurements.height || '');
     wallInputs.push(
       <div key={i}>
         <Wall
           wallName={`Wall ${String.fromCharCode(65 + i - 1)}`}
+          l={length} // Pass the initial state as props to Wall component
+          h={height} // Pass the initial state as props to Wall component
           onValidationChange={(isValid) => {
             const newValidationStatus = [...validationStatus];
             newValidationStatus[i - 1] = isValid;
@@ -71,10 +86,11 @@ const Measure: React.FC = () => {
             const updatedMeasurements = [...wallMeasurements];
             updatedMeasurements[i - 1] = { length, height };
             setWallMeasurements(updatedMeasurements);
-            localStorage.setItem(`wallMeasurements${i}`, JSON.stringify(updatedMeasurements));
-            
+            saveWallMeasurementsToLocalStorage(i-1,updatedMeasurements[i - 1]);
           }}
+          
         />
+        
 
       </div>
     );
@@ -96,9 +112,10 @@ const Measure: React.FC = () => {
       >
         <div
           style={{
-            width: '449px',
-            height: '98px',
+            width: '100%',
+            maxWidth: '449px',
             marginBottom: '20px',
+            textAlign: 'center',
           }}
         >
           <h1 className="text-3xl font-medium font-actor mb-2">

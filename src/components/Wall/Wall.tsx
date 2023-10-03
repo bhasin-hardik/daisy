@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 interface WallProps {
   wallName: string;
+  l: number | ''; // Add length prop
+  h: number | ''; // Add height prop
   onValidationChange: (isValid: boolean) => void; // Callback to update parent component
   onMeasurementChange: (length: number, height: number) => void;
+
+ 
 }
 
-const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementChange }) => {
-  const [length, setLength] = useState<number | ''>('');
-  const [height, setHeight] = useState<number | ''>('');
+const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementChange, l,h }) => {
+  const [length, setLength] = useState<number | ''>(l);
+  const [height, setHeight] = useState<number | ''>(h);
   const [isValid, setIsValid] = useState(false); // State to track validation
 
   // Validation function for length and height
@@ -29,7 +33,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementC
   useEffect(() => {
     validateInputs();
   }, [length, height]);
-
+ 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -52,6 +56,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementC
             color: '#0E180A',
             border: '1px solid #ccc',
             marginLeft: '10px',
+            
           }}
           placeholder={`Enter Wall Length`}
           value={length === '' ? '' : String(length)}
@@ -79,6 +84,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementC
             background: '#F9FAFB',
             color: '#0E180A',
             border: '1px solid #ccc',
+           
           }}
           placeholder={`Enter Wall Height`}
           value={height === '' ? '' : String(height)}
