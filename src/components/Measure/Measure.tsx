@@ -97,7 +97,7 @@ const Measure: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center" style={{ marginTop: '20px' }}>
       <div
         className="bg-white p-8 text-center mx-4 sm:mx-8 md:mx-12 lg:mx-16 xl:mx-20"
         style={{

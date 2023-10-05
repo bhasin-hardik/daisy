@@ -81,7 +81,6 @@ const Cabinets: React.FC = () => {
     margin: '20px 0', // Add responsive margin
     display: 'flex',
     flexDirection: 'column',
-
     justifyContent: 'center',
     backgroundColor: '#f9fafb',
   };
@@ -97,27 +96,21 @@ const Cabinets: React.FC = () => {
     margin: '8px', // Add margin for spacing
     opacity: 0.6,
   };
-  const selectedImage: React.CSSProperties = {
-    border: '2px solid #7F56D9',
-    filter: 'brightness(20%)' /* Adjust the brightness to your preference */
-  }
-  const deselectedImage: React.CSSProperties = {
-    border: '2px solid transparent',
-    filter: 'brightness(100%)', // Reset brightness for deselected images
-  };
+ 
   return (
     <div className="flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg" style={{ height: '90px', marginTop: '180px', marginLeft: '169px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '28px' }}>
-        <div style={{ width: '449px', height: '88px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '449px', height: '52px', background: 'none', fontFamily: 'Actor', fontSize: '30px', fontWeight: 400, lineHeight: '36px', letterSpacing: '-0.02em', textAlign: 'center' }}>Specialty Cabinets:</div>
-          <div style={{ width: '426px', height: '36px', background: 'none', fontFamily: 'Actor', fontSize: '18px', fontWeight: 400, lineHeight: '26px', letterSpacing: '-0.02em', textAlign: 'center', color: '#656362' }}>Please select any specialty cabinets you would like to add to your kitchen.</div>
+        <div style={{width:'100%', maxWidth: '449px', height: '88px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width:'100%',maxWidth: '449px', height: '52px', background: 'none', fontFamily: 'Actor', fontSize: '30px', fontWeight: 400, lineHeight: '36px', letterSpacing: '-0.02em', textAlign: 'center' }}>Specialty Cabinets:</div>
+          <div style={{marginTop: '20px',width:'100%', maxWidth: '426px', height: '36px', background: 'none', fontFamily: 'Actor', fontSize: '18px', fontWeight: 400, lineHeight: '26px', letterSpacing: '-0.02em', textAlign: 'center', color: '#656362' }}>Please select any specialty cabinets you would like to add to your kitchen.</div>
         </div>
 
-        <div style={{ width: '137px', height: '21px', marginTop: '70px', top: '365px', left: '475px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Specialty Cabinet</div>
-        <div style={{ width: '105px', height: '21px', marginTop: '70px', top: '365px', left: '871px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Wall preference</div>
-
+        <div style={{width:'100%', maxWidth: '137px', height: '21px', marginTop: '70px', top: '365px', left: '475px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Specialty Cabinet</div>
+        <div style={{ width:'100%',maxWidth: '105px', height: '21px', marginTop: '70px', top: '365px', left: '871px', fontFamily: 'Actor', fontSize: '16px', fontWeight: 400, lineHeight: '20px', letterSpacing: '-0.02em', textAlign: 'center', position: 'absolute' }}>Wall preference</div>
+        
         {cabinets.map((cabinet, index) => (
           <React.Fragment key={cabinet.name}>
+            
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: `${490 + 80 * index}px`, left: '830px', gap: '40px' }}>
               {images.map((image) => (
                 <div key={image.name} style={{ position: 'relative' }}>
@@ -172,11 +165,14 @@ const Cabinets: React.FC = () => {
                 </div>
               ))}
             </div>
-            <div style={{ position: 'absolute', top: `${490 + 80 * index}px`, left: '475px' }}>
+              <div style={{ position: 'absolute', top: `${490 + 80 * index}px`, left: '475px' }}>
               <img src={cabinet.image} alt={cabinet.name} />
-            </div>
+            </div> 
+
           </React.Fragment>
         ))}
+         
+        
 
 
       </div>

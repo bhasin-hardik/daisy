@@ -60,7 +60,7 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center" style={{ marginTop: '80px' }}>
       <div className="bg-white p-8 text-center">
         {/* Heading */}
         <h1 className="text-3xl font-medium font-actor mb-2">

@@ -89,42 +89,77 @@ const Appliance: React.FC = () => {
     return defaultData;
 
   };
-  useEffect(() => {
-    initializeLocalData();
-  }, [count, wallLetter]);
+ 
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`appliance_${wallLetter}`, JSON.stringify(data));
   };
-  const [refrigeratorSelected, setrefrigeratorSelected] = useState(false);
-  const [sinkSelected, setsinkSelected] = useState(false);
-  const [rangeSelected, setrangeSelected] = useState(false);
-  const [dishSelected, setdishSelected] = useState(false);
-
-  const [refrigeratorHeight, setrefrigeratorHeight] = useState('');
-  const [refrigeratorWidth, setrefrigeratorWidth] = useState('');
-  const [refrigeratorCenter, setrefrigeratorCenter] = useState('');
+  const applianceDataFromLocalStorage = JSON.parse(localStorage.getItem(`appliance_${wallLetter}`) || '{}');
+  
+  const refrigeratorLocal = applianceDataFromLocalStorage.refrigerator;
+  const sinkLocal = applianceDataFromLocalStorage.sink;
+  const rangeLocal = applianceDataFromLocalStorage.range;
+  const dishLocal = applianceDataFromLocalStorage.dish;
 
 
-  const [sinkWidth, setsinkWidth] = useState('');
-  const [sinkCenter, setsinkCenter] = useState('');
 
 
-  const [rangeWidth, setrangeWidth] = useState('');
-  const [rangeCenter, setrangeCenter] = useState('');
+  const [refrigeratorSelected, setrefrigeratorSelected] = useState(refrigeratorLocal.selected);
+  const [sinkSelected, setsinkSelected] = useState(sinkLocal.selected);
+  const [rangeSelected, setrangeSelected] = useState(rangeLocal.selected);
+  const [dishSelected, setdishSelected] = useState(dishLocal.selected);
+
+  const [refrigeratorHeight, setrefrigeratorHeight] = useState(refrigeratorLocal.height);
+  const [refrigeratorWidth, setrefrigeratorWidth] = useState(refrigeratorLocal.width);
+  const [refrigeratorCenter, setrefrigeratorCenter] = useState(refrigeratorLocal.center);
 
 
-  const [dishWidth, setdishWidth] = useState('');
-  const [dishCenter, setdishCenter] = useState('');
+  const [sinkWidth, setsinkWidth] = useState(sinkLocal.width);
+  const [sinkCenter, setsinkCenter] = useState(sinkLocal.center);
+
+
+  const [rangeWidth, setrangeWidth] = useState(rangeLocal.width);
+  const [rangeCenter, setrangeCenter] = useState(rangeLocal.center);
+
+
+  const [dishWidth, setdishWidth] = useState(dishLocal.width);
+  const [dishCenter, setdishCenter] = useState(dishLocal.center);
 
   const [error, setError] = useState('');
+  const resetApplianceData = () => {
+    // Reset state variables for selected options and inputs
+    setrefrigeratorSelected(false);
+    setsinkSelected(false);
+    setrangeSelected(false);
+    setdishSelected(false);
+  
+  
+    setrefrigeratorHeight('');
+    setrefrigeratorWidth('');
+    setrefrigeratorCenter('');
+  
+    
+    setsinkWidth('');
+    setsinkCenter('');
+  
+    
+    setdishWidth('');
+    setdishCenter('');
+  
+   
+    setrangeWidth('');
+    setrangeCenter('');
+  
+    // Clear local storage data
+    
+  };
 
   const handleSubmit = () => {
     let hasError = false;
 
     if (refrigeratorSelected) {
-      const refrigeratorHeightValue = parseFloat(refrigeratorHeight);
-      const refrigeratorWidthValue = parseFloat(refrigeratorWidth);
-      const refrigeratorCenterValue = parseFloat(refrigeratorCenter);
+      const refrigeratorHeightValue = parseFloat(refrigeratorLocal.height);
+      const refrigeratorWidthValue = parseFloat(refrigeratorLocal.width);
+      const refrigeratorCenterValue = parseFloat(refrigeratorLocal.center);
 
       if (
         isNaN(refrigeratorHeightValue) ||
@@ -141,8 +176,8 @@ const Appliance: React.FC = () => {
     }
 
     if (sinkSelected) {
-      const sinkWidthValue = parseFloat(sinkWidth);
-      const sinkCenterValue = parseFloat(sinkCenter);
+      const sinkWidthValue = parseFloat(sinkLocal.width);
+      const sinkCenterValue = parseFloat(sinkLocal.center);
 
       if (
         isNaN(sinkWidthValue) ||
@@ -157,8 +192,8 @@ const Appliance: React.FC = () => {
     }
 
     if (rangeSelected) {
-      const rangeWidthValue = parseFloat(rangeWidth);
-      const rangeCenterValue = parseFloat(rangeCenter);
+      const rangeWidthValue = parseFloat(rangeLocal.width);
+      const rangeCenterValue = parseFloat(rangeLocal.center);
 
       if (
         isNaN(rangeWidthValue) ||
@@ -173,8 +208,8 @@ const Appliance: React.FC = () => {
     }
 
     if (dishSelected) {
-      const dishWidthValue = parseFloat(dishWidth);
-      const dishCenterValue = parseFloat(dishCenter);
+      const dishWidthValue = parseFloat(dishLocal.width);
+      const dishCenterValue = parseFloat(dishLocal.center);
 
       if (
         isNaN(dishWidthValue) ||
@@ -193,6 +228,7 @@ const Appliance: React.FC = () => {
         const nextNumWalls = parseInt(count) + 1; // Increment the parameter
         if (numWalls > 1) {
           if (nextNumWalls <= numWalls) {
+            resetApplianceData();
             navigate(`/appliance/${nextNumWalls}`); // Navigate to the next Obstruction component
           } else {
             navigate('/cabinet');
@@ -220,8 +256,8 @@ const Appliance: React.FC = () => {
 
 
   const containerStyle: React.CSSProperties = {
-    width: '1101px',
-    height: '90px',
+    width: '100%',
+    height: 'auto',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -249,23 +285,10 @@ const Appliance: React.FC = () => {
     color: '#656362',
   };
 
-  const selectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '213px',
-    marginTop: '20px',
-    border: '2px solid #7F56D9',
-  };
-
-  const unselectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '213px',
-    marginTop: '20px',
-  };
-
-
-  const inputStyle = {
-    width: '295px',
-    height: '58px',
+   const inputStyle = {
+    width: '100%',
+    height: 'auto',
+    maxWidth: '295px',
     backgroundColor: '#F9FAFB',
     marginBottom: '10px',
     marginTop: '10px',
@@ -274,7 +297,7 @@ const Appliance: React.FC = () => {
     fontSize: '16px',
   };
   const handleInputChange = (applianceType: string, field: string, value: string) => {
-    setWallApplianceDatafromLocal((prevData) => {
+    setWallApplianceDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
       newData[applianceType][field] = value;
       updateLocalStorageData(newData);
@@ -287,7 +310,7 @@ const Appliance: React.FC = () => {
     const updatedData = { ...wallApplianceDatafromLocal };
     updatedData[applianceType].selected = !updatedData[applianceType].selected;
     setWallApplianceDatafromLocal(updatedData);
-    setWallApplianceDatafromLocal((prevData) => {
+    setWallApplianceDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
       newData[applianceType].selected = !newData[applianceType].selected;
       updateLocalStorageData(newData);
@@ -350,17 +373,17 @@ const Appliance: React.FC = () => {
  
   
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{marginLeft: '20px'}}>
+    <div className="min-h-screen flex flex-col items-center justify-center" style={{marginLeft: '20px', marginTop: '30px'}}  >
       <div className="bg-white p-8 text-center" style={containerStyle}>
         <h1 style={headingStyle}>Appliances: {wallHeading}</h1>
         <p style={subheadingStyle}>Please select any obstructions on your wall.</p>
       </div>
   
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' }}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+          <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('refrigerator')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={refrigeratorSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={refrigeratorLocal.selected === true ? (error && refrigeratorLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <path d="M77.4688 45.8157V166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M77.4688 45.8157L142.72 45.4957" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M143.375 45.4844L142.647 166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
@@ -374,10 +397,10 @@ const Appliance: React.FC = () => {
             placeholder="Refrigerator height"
             style={{
               ...inputStyle,
-              border: refrigeratorSelected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={refrigeratorHeight}
+            value={refrigeratorLocal.height}
             onChange={(e) => {
               setrefrigeratorHeight(e.target.value);
               refrigeratorData.height = e.target.value;
@@ -391,10 +414,10 @@ const Appliance: React.FC = () => {
             placeholder="Refrigerator width"
             style={{
               ...inputStyle,
-              border: refrigeratorSelected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={refrigeratorWidth}
+            value={refrigeratorLocal.width}
             onChange={(e) => {
               setrefrigeratorWidth(e.target.value);
               refrigeratorData.width = e.target.value;
@@ -408,10 +431,10 @@ const Appliance: React.FC = () => {
             placeholder="Refrigerator center"
             style={{
               ...inputStyle,
-              border: refrigeratorSelected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={refrigeratorCenter}
+            value={refrigeratorLocal.center}
             onChange={(e) => {
               setrefrigeratorCenter(e.target.value);
               refrigeratorData.center = e.target.value;
@@ -423,10 +446,10 @@ const Appliance: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px'}}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative' , marginTop:'20px',width: '100%', maxWidth: '222px'}}>
+          <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('sink')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={sinkSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={sinkLocal.selected === true ? (error && sinkLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <rect x="71.5312" y="79.7656" width="77.7812" height="53.4688" rx="3" fill="#F9FAFB" fill-opacity="0.46" stroke="black" stroke-width="2" />
             <path d="M115.25 106.5C115.25 108.805 113.131 110.747 110.422 110.747C107.712 110.747 105.594 108.805 105.594 106.5C105.594 104.195 107.712 102.253 110.422 102.253C113.131 102.253 115.25 104.195 115.25 106.5Z" fill="#F9FAFB" fill-opacity="0.46" stroke="black" stroke-width="0.75" />
           </svg>
@@ -442,10 +465,10 @@ const Appliance: React.FC = () => {
             placeholder="Sink width"
             style={{
               ...inputStyle,
-              border: sinkSelected ? '2px solid black' : 'none',
-              backgroundColor: sinkSelected ? '#84FFAE75' : '#F9FAFB',
+              border: sinkLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: sinkLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={sinkWidth}
+            value={sinkLocal.width}
             onChange={(e) => {
               setsinkWidth(e.target.value);
               sinkData.width = e.target.value;
@@ -459,10 +482,10 @@ const Appliance: React.FC = () => {
             placeholder="Sink center"
             style={{
               ...inputStyle,
-              border: sinkSelected ? '2px solid black' : 'none',
-              backgroundColor: sinkSelected ? '#84FFAE75' : '#F9FAFB',
+              border: sinkLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: sinkLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={sinkCenter}
+            value={sinkLocal.center}
             onChange={(e) => {
               setsinkCenter(e.target.value);
               sinkData.center = e.target.value;
@@ -474,10 +497,10 @@ const Appliance: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px'}}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative' , marginTop:'20px', width: '100%', maxWidth: '222px'}}>
+          <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('range')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={rangeSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={rangeLocal.selected === true ? (error && rangeLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <rect x="76.1562" y="78.6562" width="69.6875" height="55.6875" rx="3" stroke="#615D5A" stroke-width="2" />
             <path d="M134.06 93.9591C134.06 98.5676 129.942 102.363 124.785 102.363C119.628 102.363 115.51 98.5676 115.51 93.9591C115.51 89.3506 119.628 85.5556 124.785 85.5556C129.942 85.5556 134.06 89.3506 134.06 93.9591Z" stroke="#615D5A" stroke-width="0.75" />
             <path d="M134.06 119.041C134.06 123.649 129.942 127.444 124.785 127.444C119.628 127.444 115.51 123.649 115.51 119.041C115.51 114.432 119.628 110.637 124.785 110.637C129.942 110.637 134.06 114.432 134.06 119.041Z" stroke="#615D5A" stroke-width="0.75" />
@@ -496,10 +519,10 @@ const Appliance: React.FC = () => {
             placeholder="Range width"
             style={{
               ...inputStyle,
-              border: rangeSelected ? '2px solid black' : 'none',
-              backgroundColor: rangeSelected ? '#84FFAE75' : '#F9FAFB',
+              border: rangeLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: rangeLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={rangeWidth}
+            value={rangeLocal.width}
             onChange={(e) => {
               setrangeWidth(e.target.value);
               rangeData.width = e.target.value;
@@ -513,10 +536,10 @@ const Appliance: React.FC = () => {
             placeholder="Range center"
             style={{
               ...inputStyle,
-              border: rangeSelected ? '2px solid black' : 'none',
-              backgroundColor: rangeSelected ? '#84FFAE75' : '#F9FAFB',
+              border: rangeLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: rangeLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={rangeCenter}
+            value={rangeLocal.center}
             onChange={(e) => {
               setrangeCenter(e.target.value);
               rangeData.center = e.target.value;
@@ -528,10 +551,10 @@ const Appliance: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px'}}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative' , marginTop:'20px', width: '100%', maxWidth: '222px'}}>
+          <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('dish')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={dishSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={dishLocal.selected === true ? (error &&  dishLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <path d="M77.4688 74.5016V137.791" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M77.4688 74.5016L142.72 74.334" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M143.375 74.3281L142.657 137.791" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
@@ -548,10 +571,10 @@ const Appliance: React.FC = () => {
             placeholder="Dish width"
             style={{
               ...inputStyle,
-              border: dishSelected ? '2px solid black' : 'none',
-              backgroundColor: dishSelected ? '#84FFAE75' : '#F9FAFB',
+              border: dishLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: dishLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={dishWidth}
+            value={dishLocal.width}
             onChange={(e) => {
               setdishWidth(e.target.value);
               dishData.width = e.target.value;
@@ -565,10 +588,10 @@ const Appliance: React.FC = () => {
             placeholder="Dish center"
             style={{
               ...inputStyle,
-              border: dishSelected ? '2px solid black' : 'none',
-              backgroundColor: dishSelected ? '#84FFAE75' : '#F9FAFB',
+              border: dishLocal.selected ? '2px solid black' : 'none',
+              backgroundColor: dishLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={dishCenter}
+            value={dishLocal.center}
             onChange={(e) => {
               setdishCenter(e.target.value);
               dishData.center = e.target.value;

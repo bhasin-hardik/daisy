@@ -4,12 +4,12 @@ import Navbar from './components/Navbar/Navbar';
 import Layout from './components/Layout/Layout';
 import Obstruction from './components/Obstruction/Obstruction';
 import Measure from './components/Measure/Measure';
-
+import Cabinet from './components/Cabinet/Cabinet';
 import { MeasureProvider } from './components/Measure/measureContext';
 import { ObstructionProvider } from './components/Obstruction/ObstructionContext';
 
 import Appliance from './components/Appliance/Appliance';
-import Cabinets from './components/Cabinets/Cabinets';
+
 import Overview from './components/Overview/Overview';
 import { ApplianceProvider } from './components/Appliance/ApplianceContext';
 import { CabinetsProvider } from './components/Cabinets/CabinetsContext';
@@ -30,9 +30,8 @@ const App: React.FC = () => {
                     <Route path="/measurements" element={<Measure />} />
                     <Route path="/obstruction/:count" element={<Obstruction />} />
                     <Route path="/appliance/:count" element={<Appliance />} />
-                    <Route path="/cabinet" element={<Cabinets />} />
+                    <Route path="/cabinet" element={<Cabinet />} />
                     <Route path="/overview" element={<Overview />} />
-                    
                   </Routes>
                 </div>
               </CabinetsProvider>

@@ -6,24 +6,19 @@ import { useObstructionContext } from './ObstructionContext';
 
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
-
-
   const { wallObstructionData, setObstructionError } = useObstructionContext();
   // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
-
-
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
-
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
   const wallLetter = count ? String.fromCharCode(64 + parseInt(count)) : '';
-  
+
   let wallIndex = 0;
 
   if (count !== undefined) {
     wallIndex = parseInt(count) - 1;
   }
-  console.log('Wall Index:', wallIndex);
+
 
   const {
     doorData,
@@ -32,6 +27,7 @@ const Obstruction: React.FC = () => {
     otherData,
     Obstructionerror,
   } = wallObstructionData[wallIndex];
+  
   const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(() => {
     // Initialize with data from local storage or default values
     const defaultData = {
@@ -61,7 +57,8 @@ const Obstruction: React.FC = () => {
       },
     };
 
-    return JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || 'null') || defaultData;
+    const wallDataFromLocalStorage = JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || 'null');
+    return wallDataFromLocalStorage || defaultData;
   });
   const initializeLocalData = () => {
 
@@ -95,81 +92,89 @@ const Obstruction: React.FC = () => {
     return defaultData;
   };
 
-  useEffect(() => {
-    initializeLocalData();
-  }, [count, wallLetter]);
+ 
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`obstruction_${wallLetter}`, JSON.stringify(data));
   };
+   
+  const obstructionDataFromLocalStorage = JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || '{}');
+  const doorDataFromLocalStorage = obstructionDataFromLocalStorage.door;
+  const windowDataFromLocalStorage = obstructionDataFromLocalStorage.window;
+  const beamDataFromLocalStorage = obstructionDataFromLocalStorage.beam;
+  const otherDataFromLocalStorage = obstructionDataFromLocalStorage.other;
+ 
 
-  const [doorSelected, setDoorSelected] = useState(false);
-  const [windowSelected, setWindowSelected] = useState(false);
-  const [beamSelected, setBeamSelected] = useState(false);
-  const [otherSelected, setOtherSelected] = useState(false);
+ 
 
-  const [doorHeight, setDoorHeight] = useState('');
-  const [doorWidth, setDoorWidth] = useState('');
-  const [doorCenter, setDoorCenter] = useState('');
+  const [doorSelected, setDoorSelected] = useState(doorDataFromLocalStorage.selected);
+  const [windowSelected, setWindowSelected] = useState(windowDataFromLocalStorage.selected);
+  const [beamSelected, setBeamSelected] = useState(beamDataFromLocalStorage.selected);
+  const [otherSelected, setOtherSelected] = useState(otherDataFromLocalStorage.selected);
 
-  const [windowHeight, setWindowHeight] = useState('');
-  const [windowWidth, setWindowWidth] = useState('');
-  const [windowCenter, setWindowCenter] = useState('');
+  const [doorHeight, setDoorHeight] = useState(doorDataFromLocalStorage.height);
+  const [doorWidth, setDoorWidth] = useState(doorDataFromLocalStorage.width);
+  const [doorCenter, setDoorCenter] = useState(doorDataFromLocalStorage.center);
 
-  const [beamHeight, setBeamHeight] = useState('');
-  const [beamWidth, setBeamWidth] = useState('');
-  const [beamCenter, setBeamCenter] = useState('');
+  const [windowHeight, setWindowHeight] = useState(windowDataFromLocalStorage.height);
+  const [windowWidth, setWindowWidth] = useState(windowDataFromLocalStorage.width);
+  const [windowCenter, setWindowCenter] = useState(windowDataFromLocalStorage.center);
 
-  const [otherHeight, setOtherHeight] = useState('');
-  const [otherWidth, setOtherWidth] = useState('');
-  const [otherCenter, setOtherCenter] = useState('');
+  const [beamHeight, setBeamHeight] = useState(beamDataFromLocalStorage.height);
+  const [beamWidth, setBeamWidth] = useState(beamDataFromLocalStorage.width);
+  const [beamCenter, setBeamCenter] = useState(beamDataFromLocalStorage.center);
+
+  const [otherHeight, setOtherHeight] = useState(otherDataFromLocalStorage.height);
+  const [otherWidth, setOtherWidth] = useState(otherDataFromLocalStorage.width);
+  const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center);
 
   const [error, setError] = useState('');
+  
 
 
   const handleSubmit = () => {
     setError(''); // Clear any previous error messages
 
-    const doorHeightValue = parseFloat(doorHeight);
-    const doorWidthValue = parseFloat(doorWidth);
-    const doorCenterValue = parseFloat(doorCenter);
+    const doorHeightValue = parseFloat(doorDataFromLocalStorage.height);
+    const doorWidthValue = parseFloat(doorDataFromLocalStorage.width);
+    const doorCenterValue = parseFloat(doorDataFromLocalStorage.center);
 
-    const windowHeightValue = parseFloat(windowHeight);
-    const windowWidthValue = parseFloat(windowWidth);
-    const windowCenterValue = parseFloat(windowCenter);
+    const windowHeightValue = parseFloat(windowDataFromLocalStorage.height);
+    const windowWidthValue = parseFloat(windowDataFromLocalStorage.width);
+    const windowCenterValue = parseFloat(windowDataFromLocalStorage.center);
 
-    const beamHeightValue = parseFloat(beamHeight);
-    const beamWidthValue = parseFloat(beamWidth);
-    const beamCenterValue = parseFloat(beamCenter);
+    const beamHeightValue = parseFloat(beamDataFromLocalStorage.height);
+    const beamWidthValue = parseFloat(beamDataFromLocalStorage.width);
+    const beamCenterValue = parseFloat(beamDataFromLocalStorage.center);
 
-    const otherHeightValue = parseFloat(otherHeight);
-    const otherWidthValue = parseFloat(otherWidth);
-    const otherCenterValue = parseFloat(otherCenter);
+    const otherHeightValue = parseFloat(otherDataFromLocalStorage.height);
+    const otherWidthValue = parseFloat(otherDataFromLocalStorage.width);
+    const otherCenterValue = parseFloat(otherDataFromLocalStorage.center);
 
     const isDoorValid =
-      doorSelected && doorHeightValue >= 0 && doorWidthValue >= 0 && doorCenterValue >= 0;
+     doorDataFromLocalStorage.selected && doorHeightValue >= 0 && doorWidthValue >= 0 && doorCenterValue >= 0;
     const isWindowValid =
-      windowSelected && windowHeightValue >= 0 && windowWidthValue >= 0 && windowCenterValue >= 0;
+      windowDataFromLocalStorage.selected && windowHeightValue >= 0 && windowWidthValue >= 0 && windowCenterValue >= 0;
     const isBeamValid =
-      beamSelected && beamHeightValue >= 0 && beamWidthValue >= 0 && beamCenterValue >= 0;
+      beamDataFromLocalStorage.selected && beamHeightValue >= 0 && beamWidthValue >= 0 && beamCenterValue >= 0;
     const isOtherValid =
-      otherSelected && otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0;
+      otherDataFromLocalStorage.selected && otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0;
 
-    if (!isDoorValid && doorSelected) {
+    if (!isDoorValid && doorDataFromLocalStorage.selected) {
       setObstructionError('Please fill all door fields with positive values.', wallIndex);
       setError('Please fill all door fields with positive values.');
       return;
     }
-    if (!isWindowValid && windowSelected) {
+    if (!isWindowValid && windowDataFromLocalStorage.selected) {
       setObstructionError('Please fill all window fields with positive values.', wallIndex);
       setError('Please fill all window fields with positive values.');
       return;
     }
-    if (!isBeamValid && beamSelected) {
+    if (!isBeamValid && beamDataFromLocalStorage.selected) {
       setObstructionError('Please fill all beam fields with positive values.', wallIndex);
       setError('Please fill all beam fields with positive values.');
       return;
     }
-    if (!isOtherValid && otherSelected) {
+    if (!isOtherValid && otherDataFromLocalStorage.selected) {
       setObstructionError('Please fill all other fields with positive values.', wallIndex);
       setError('Please fill all other fields with positive values.');
       return;
@@ -181,8 +186,10 @@ const Obstruction: React.FC = () => {
       const nextNumWalls = parseInt(count) + 1; // Increment the parameter
       if (numWalls > 1) {
         if (count && nextNumWalls <= numWalls) {
+
           navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
         } else {
+
           navigate('/appliance/1');
         }
       } else {
@@ -208,8 +215,8 @@ const Obstruction: React.FC = () => {
 
 
   const containerStyle: React.CSSProperties = {
-    width: '1101px',
-    height: '90px',
+    width: '100%', // Use a relative width for responsiveness
+    height: 'auto',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -217,6 +224,8 @@ const Obstruction: React.FC = () => {
     gap: '28px',
     marginTop: '40px',
   };
+
+
 
   const headingStyle: React.CSSProperties = {
     fontFamily: 'Actor',
@@ -237,34 +246,12 @@ const Obstruction: React.FC = () => {
     color: '#656362',
   };
 
-  const selectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '213px',
-    marginTop: '20px',
-    border: '2px solid #7F56D9',
-  };
 
-  const unselectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '213px',
-    marginTop: '20px',
-  };
-  const otherselectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '53px',
-    marginTop: '20px',
-    border: '2px solid #7F56D9',
-  };
-
-  const otherunselectedImageStyle: React.CSSProperties = {
-    width: '222px',
-    height: '53px',
-    marginTop: '20px',
-  };
 
   const inputStyle = {
-    width: '295px',
-    height: '58px',
+    width: '100%',
+    height: 'auto',
+    maxWidth: '295px',
     backgroundColor: '#F9FAFB',
     marginBottom: '10px',
     marginTop: '10px',
@@ -272,8 +259,9 @@ const Obstruction: React.FC = () => {
     color: '#0E180A',
     fontSize: '16px',
   };
+
   const handleInputChange = (obstructionType: string, field: string, value: string) => {
-    setWallObstructionDatafromLocal((prevData) => {
+    setWallObstructionDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
       newData[obstructionType][field] = value;
       updateLocalStorageData(newData);
@@ -285,7 +273,8 @@ const Obstruction: React.FC = () => {
     const updatedData = { ...wallObstructionDatafromLocal };
     updatedData[obstructionType].selected = !updatedData[obstructionType].selected;
     setWallObstructionDatafromLocal(updatedData);
-    setWallObstructionDatafromLocal((prevData) => {
+
+    setWallObstructionDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
       newData[obstructionType].selected = !newData[obstructionType].selected;
       updateLocalStorageData(newData);
@@ -351,18 +340,19 @@ const Obstruction: React.FC = () => {
     }
   };
 
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{marginLeft: '20px'}}>
+    <div className="min-h-screen flex flex-col items-center justify-center" style={{ marginLeft: '20px', marginTop: '40px' }} >
       <div className="bg-white p-8 text-center" style={containerStyle}>
         <h1 style={headingStyle}>Obstructions: {wallHeading}</h1>
         <p style={subheadingStyle}>Please select any obstructions on your wall.</p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' }}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+          <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('door')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={doorSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={doorDataFromLocalStorage.selected === true ? (error && doorDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <path d="M77.4688 45.8155V166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M77.4688 45.8155L142.72 45.4941" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M143.375 45.4844L142.657 166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
@@ -378,10 +368,11 @@ const Obstruction: React.FC = () => {
             placeholder="Door height"
             style={{
               ...inputStyle,
-              border: doorSelected ? '2px solid black' : 'none',
-              backgroundColor: doorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
+
             }}
-            value={doorHeight}
+            value={doorDataFromLocalStorage.height}
             onChange={(e) => {
               setDoorHeight(e.target.value);
               doorData.height = e.target.value;
@@ -394,10 +385,10 @@ const Obstruction: React.FC = () => {
             placeholder="Door width"
             style={{
               ...inputStyle,
-              border: doorSelected ? '2px solid black' : 'none',
-              backgroundColor: doorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={doorWidth}
+            value={doorDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setDoorWidth(e.target.value);
@@ -411,10 +402,10 @@ const Obstruction: React.FC = () => {
             placeholder="Door center"
             style={{
               ...inputStyle,
-              border: doorSelected ? '2px solid black' : 'none',
-              backgroundColor: doorSelected ? '#84FFAE75' : '#F9FAFB',
+              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={doorCenter}
+            value={doorDataFromLocalStorage.center}
             onChange={(e) => {
               setDoorCenter(e.target.value);
               doorData.center = e.target.value;
@@ -425,10 +416,10 @@ const Obstruction: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' }}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
+        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+          <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('window')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={windowSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={windowDataFromLocalStorage.selected === true ? (error && windowDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <path d="M62.4375 80.0127V132.005" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M62.4375 80.0127L160.063 79.875" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
             <path d="M160.063 132.965V80.9732" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
@@ -445,10 +436,10 @@ const Obstruction: React.FC = () => {
             placeholder="Window height"
             style={{
               ...inputStyle,
-              border: windowSelected ? '2px solid black' : 'none',
-              backgroundColor: windowSelected ? '#84FFAE75' : '#F9FAFB',
+              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={windowHeight}
+            value={windowDataFromLocalStorage.height}
             onChange={(e) => {
               setWindowHeight(e.target.value);
               windowData.height = e.target.value;
@@ -461,10 +452,10 @@ const Obstruction: React.FC = () => {
             placeholder="Window width"
             style={{
               ...inputStyle,
-              border: windowSelected ? '2px solid black' : 'none',
-              backgroundColor: windowSelected ? '#84FFAE75' : '#F9FAFB',
+              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={windowWidth}
+            value={windowDataFromLocalStorage.width}
             onChange={(e) => {
               setWindowWidth(e.target.value);
               windowData.width = e.target.value;
@@ -477,10 +468,10 @@ const Obstruction: React.FC = () => {
             placeholder="Window center"
             style={{
               ...inputStyle,
-              border: windowSelected ? '2px solid black' : 'none',
-              backgroundColor: windowSelected ? '#84FFAE75' : '#F9FAFB',
+              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={windowCenter}
+            value={windowDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setWindowCenter(e.target.value);
@@ -492,10 +483,10 @@ const Obstruction: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' }}>
-          <svg width="222" height="213" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+          <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
             onClick={() => toggleImageSelection('beam')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={beamSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={beamDataFromLocalStorage.selected === true ? (error && beamDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
             <rect x="60.125" y="64.3438" width="101.75" height="84.3125" rx="20" fill="url(#pattern0)" />
             <defs>
               <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -514,10 +505,10 @@ const Obstruction: React.FC = () => {
             placeholder="Beam height"
             style={{
               ...inputStyle,
-              border: beamSelected ? '2px solid black' : 'none',
-              backgroundColor: beamSelected ? '#84FFAE75' : '#F9FAFB',
+              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={beamHeight}
+            value={beamDataFromLocalStorage.height}
             onChange={(e) => {
               // Update the context directly here
               setBeamHeight(e.target.value);
@@ -531,10 +522,10 @@ const Obstruction: React.FC = () => {
             placeholder="Beam width"
             style={{
               ...inputStyle,
-              border: beamSelected ? '2px solid black' : 'none',
-              backgroundColor: beamSelected ? '#84FFAE75' : '#F9FAFB',
+              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={beamWidth}
+            value={beamDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setBeamWidth(e.target.value);
@@ -548,10 +539,10 @@ const Obstruction: React.FC = () => {
             placeholder="Beam center"
             style={{
               ...inputStyle,
-              border: beamSelected ? '2px solid black' : 'none',
-              backgroundColor: beamSelected ? '#84FFAE75' : '#F9FAFB',
+              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={beamCenter}
+            value={beamDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setBeamCenter(e.target.value);
@@ -563,10 +554,10 @@ const Obstruction: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' }}>
-          <svg width="222" height="53" viewBox="0 0 222 53" fill="none" xmlns="http://www.w3.org/2000/svg"
-          onClick={() => toggleImageSelection('other')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V46C222 49.866 218.866 53 215 53H7C3.134 53 0 49.866 0 46V7Z" fill={otherSelected === true ? '#84FFAE75' : "#F9FAFB"} />
+        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+          <svg width="100%" height="60%" viewBox="0 0 222 53" fill="none" xmlns="http://www.w3.org/2000/svg"
+            onClick={() => toggleImageSelection('other')}>
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V46C222 49.866 218.866 53 215 53H7C3.134 53 0 49.866 0 46V7Z" fill={otherDataFromLocalStorage.selected === true ? (error && otherDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
           </svg>
 
           <p
@@ -594,10 +585,10 @@ const Obstruction: React.FC = () => {
             placeholder="Other height"
             style={{
               ...inputStyle,
-              border: otherSelected ? '2px solid black' : 'none',
-              backgroundColor: otherSelected ? '#84FFAE75' : '#F9FAFB',
+              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={otherHeight}
+            value={otherDataFromLocalStorage.height}
             onChange={(e) => {
               // Update the context directly here
               setOtherHeight(e.target.value);
@@ -611,10 +602,10 @@ const Obstruction: React.FC = () => {
             placeholder="Other width"
             style={{
               ...inputStyle,
-              border: otherSelected ? '2px solid black' : 'none',
-              backgroundColor: otherSelected ? '#84FFAE75' : '#F9FAFB',
+              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={otherWidth}
+            value={otherDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setOtherWidth(e.target.value);
@@ -628,10 +619,10 @@ const Obstruction: React.FC = () => {
             placeholder="Other center"
             style={{
               ...inputStyle,
-              border: otherSelected ? '2px solid black' : 'none',
-              backgroundColor: otherSelected ? '#84FFAE75' : '#F9FAFB',
+              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
+              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
             }}
-            value={otherCenter}
+            value={otherDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setOtherCenter(e.target.value);
