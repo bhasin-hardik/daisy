@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Wall from '../Wall/Wall';
 import walls from '../../assets/walls.png';
 import { useNavigate } from 'react-router-dom';
-import { useMeasureContext } from './measureContext';
+
 type WallMeasurements = {
   length: number;
   height: number;
 };
+
 const Measure: React.FC = () => {
   const navigate = useNavigate();
-  
-  
+
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
-  const [isFormValid, setIsFormValid] = useState(false);
+
   const [validationStatus, setValidationStatus] = useState(() => {
     const initialValidationStatus = Array(wallsNeededFromStorage).fill(false);
     for (let i = 1; i <= wallsNeededFromStorage; i++) {
@@ -24,26 +24,27 @@ const Measure: React.FC = () => {
     }
     return initialValidationStatus;
   });
-  
+
   const [errorMessage, setErrorMessage] = useState('');
-  const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1); // Track the current 
-  const { wallMeasurements, setWallMeasurements } = useMeasureContext();
-  useEffect(() => {
-    setIsFormValid(validationStatus.every((valid) => valid));
-  }, [validationStatus]);
-  const saveWallMeasurementsToLocalStorage = (wallIndex: number,measurements : WallMeasurements) => {
-    localStorage.setItem(`wallMeasurements_${wallIndex+1}`, JSON.stringify(measurements));
+  const [currentObstructionNumber, setCurrentObstructionNumber] = useState(1);
+
+  const saveWallMeasurementsToLocalStorage = (wallIndex: number, measurements: WallMeasurements) => {
+    localStorage.setItem(`wallMeasurements_${wallIndex + 1}`, JSON.stringify(measurements));
   };
+
   const handleSubmit = () => {
     if (validationStatus.every((valid) => valid)) {
-      // Check if there are more walls to navigate to
-      const hasNegativeNumbers = wallMeasurements.some(({ length, height }) => length < 0 || height < 0);
+      const hasNegativeNumbers = validationStatus.some((isValid, index) => {
+        const { length, height } = JSON.parse(
+          localStorage.getItem(`wallMeasurements_${index + 1}`) || '{}'
+        );
+        return !isValid || length < 0 || height < 0;
+      });
+
       if (hasNegativeNumbers) {
         setErrorMessage('Please enter positive numbers only.');
       } else {
         if (currentObstructionNumber <= wallsNeededFromStorage) {
-          // Save the measurements for the current wall in local storage
-          const currentWallMeasurements = wallMeasurements[currentObstructionNumber - 1];
           setCurrentObstructionNumber(currentObstructionNumber + 1);
           navigate(`/obstruction/${currentObstructionNumber}`);
         }
@@ -52,49 +53,43 @@ const Measure: React.FC = () => {
       setErrorMessage('Please fill in all the input fields.');
     }
   };
-  
- 
-
-  
 
   const wallInputs = [];
-
 
   for (let i = 1; i <= wallsNeededFromStorage; i++) {
     const localStorageKey = `wallMeasurements_${i}`;
     const storedMeasurements = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
     const [length, setLength] = useState<number | ''>(storedMeasurements.length || '');
     const [height, setHeight] = useState<number | ''>(storedMeasurements.height || '');
+
     wallInputs.push(
       <div key={i}>
         <Wall
           wallName={`Wall ${String.fromCharCode(65 + i - 1)}`}
-          l={length} // Pass the initial state as props to Wall component
-          h={height} // Pass the initial state as props to Wall component
+          l={length}
+          h={height}
           onValidationChange={(isValid) => {
             const newValidationStatus = [...validationStatus];
             newValidationStatus[i - 1] = isValid;
             setValidationStatus(newValidationStatus);
           }}
           onMeasurementChange={(length, height) => {
+            setLength(length);
+            setHeight(height);
             if (length < 0 || height < 0) {
               setErrorMessage('Please enter positive numbers only.');
             } else {
-              setErrorMessage(''); // Clear the error message if valid input
+              setErrorMessage('');
             }
-            // Update the wall measurements in the context when measurements change
-            const updatedMeasurements = [...wallMeasurements];
-            updatedMeasurements[i - 1] = { length, height };
-            setWallMeasurements(updatedMeasurements);
-            saveWallMeasurementsToLocalStorage(i-1,updatedMeasurements[i - 1]);
+            saveWallMeasurementsToLocalStorage(i - 1, { length, height });
           }}
-          
         />
-        
-
       </div>
     );
+   
   }
+
+
 
   return (
     <div className="flex items-center justify-center" style={{ marginTop: '20px' }}>
@@ -142,7 +137,6 @@ const Measure: React.FC = () => {
           onClick={handleSubmit}
           className="w-80 h-12 mt-2 rounded-md text-white"
           style={{ background: '#7F56D9' }}
-
         >
           Submit Details
         </button>

@@ -28,7 +28,7 @@ const Obstruction: React.FC = () => {
     windowData,
     beamData,
     otherData,
-    Obstructionerror,
+    
   } = wallObstructionData[wallIndex];
   
   const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(() => {
@@ -63,37 +63,7 @@ const Obstruction: React.FC = () => {
     const wallDataFromLocalStorage = JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || 'null');
     return wallDataFromLocalStorage || defaultData;
   });
-  const initializeLocalData = () => {
-
-    const defaultData = {
-      door: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      window: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      beam: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      other: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-    };
-    localStorage.setItem(`obstruction_${wallLetter}`, JSON.stringify(defaultData));
-    return defaultData;
-  };
+ 
 
  
   const updateLocalStorageData = (data: object) => {
@@ -132,7 +102,25 @@ const Obstruction: React.FC = () => {
   const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center);
 
   const [error, setError] = useState('');
+  console.log(doorHeight);
+  console.log(doorWidth);
+  console.log(doorCenter);
+
+  console.log(windowHeight);
+  console.log(windowWidth);
+  console.log(windowCenter);
+
+  console.log(beamHeight);
+  console.log(beamWidth);
+  console.log(beamCenter);
+
+  console.log(otherHeight);
+  console.log(otherWidth);
+  console.log(otherCenter);
+
   
+  
+
 
 
   const handleSubmit = () => {

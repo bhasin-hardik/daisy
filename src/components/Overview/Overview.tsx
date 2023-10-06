@@ -69,18 +69,7 @@ const Overview: React.FC = () => {
   };
 
 
-  const layoutBoxStyle: React.CSSProperties = {
 
-    width: '295px',
-    height: '58px',
-    margin: '20px 0', // Add responsive margin
-    display: 'flex',
-    flexDirection: 'column',
-
-    justifyContent: 'center',
-    backgroundColor: '#f9fafb',
-
-  };
 
 
 

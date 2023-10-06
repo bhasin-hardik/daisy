@@ -27,7 +27,7 @@ const Appliance: React.FC = () => {
     sinkData,
     rangeData,
     dishData,
-    ApplianceError
+    
 
   } = wallApplianceData[wallIndex];
   const [wallApplianceDatafromLocal, setWallApplianceDatafromLocal] = useState(() => {
@@ -62,37 +62,7 @@ const Appliance: React.FC = () => {
     return JSON.parse(localStorage.getItem(`appliance_${wallLetter}`) || 'null') || defaultData;
   });
 
-  const initializeLocalData = () => {
-    const defaultData = {
-      refrigerator: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      sink: {
-        selected: false,
-
-        width: '',
-        center: '',
-      },
-      range: {
-        selected: false,
-
-        width: '',
-        center: '',
-      },
-      dish: {
-        selected: false,
-
-        width: '',
-        center: '',
-      }
-    };
-    localStorage.setItem(`appliance_${wallLetter}`, JSON.stringify(defaultData));
-    return defaultData;
-
-  };
+ 
  
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`appliance_${wallLetter}`, JSON.stringify(data));
@@ -115,7 +85,7 @@ const Appliance: React.FC = () => {
   const [refrigeratorHeight, setrefrigeratorHeight] = useState(refrigeratorLocal.height);
   const [refrigeratorWidth, setrefrigeratorWidth] = useState(refrigeratorLocal.width);
   const [refrigeratorCenter, setrefrigeratorCenter] = useState(refrigeratorLocal.center);
-
+  
 
   const [sinkWidth, setsinkWidth] = useState(sinkLocal.width);
   const [sinkCenter, setsinkCenter] = useState(sinkLocal.center);
@@ -129,6 +99,18 @@ const Appliance: React.FC = () => {
   const [dishCenter, setdishCenter] = useState(dishLocal.center);
 
   const [error, setError] = useState('');
+  console.log(refrigeratorHeight);
+  console.log(refrigeratorWidth);
+  console.log(refrigeratorCenter);
+
+  console.log(sinkWidth);
+  console.log(sinkCenter);
+
+  console.log(rangeCenter);
+  console.log(rangeWidth);
+
+  console.log(dishCenter);
+  console.log(dishWidth);
   const resetApplianceData = () => {
     // Reset state variables for selected options and inputs
     setrefrigeratorSelected(false);

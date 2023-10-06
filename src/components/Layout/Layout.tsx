@@ -9,7 +9,7 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>(getSelectedImageFromLocalStorage());
   const [wallsNeeded, setWallsNeeded] = useState<number | null>(null); // Initialize to null
-
+   console.log(wallsNeeded);
 
 
   const setSelectedImageInLocalStorage = (imageId: string) => {

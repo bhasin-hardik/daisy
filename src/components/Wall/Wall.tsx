@@ -14,7 +14,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementC
   const [length, setLength] = useState<number | ''>(l);
   const [height, setHeight] = useState<number | ''>(h);
   const [isValid, setIsValid] = useState(false); // State to track validation
-
+  console.log(isValid);
   // Validation function for length and height
   const validateInputs = () => {
     const isLengthValid = length !== '';
