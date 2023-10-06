@@ -67,36 +67,36 @@ const Appliance: React.FC = () => {
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`appliance_${wallLetter}`, JSON.stringify(data));
   };
-  const applianceDataFromLocalStorage = JSON.parse(localStorage.getItem(`appliance_${wallLetter}`) || '{}');
+  const applianceDataFromLocalStorage = wallApplianceDatafromLocal;
   
-  const refrigeratorLocal = applianceDataFromLocalStorage.refrigerator;
-  const sinkLocal = applianceDataFromLocalStorage.sink;
-  const rangeLocal = applianceDataFromLocalStorage.range;
-  const dishLocal = applianceDataFromLocalStorage.dish;
+  const refrigeratorLocal = applianceDataFromLocalStorage.refrigerator || {};
+  const sinkLocal = applianceDataFromLocalStorage.sink || {};
+  const rangeLocal = applianceDataFromLocalStorage.range || {}; 
+  const dishLocal = applianceDataFromLocalStorage.dish || {};
 
 
 
 
-  const [refrigeratorSelected, setrefrigeratorSelected] = useState(refrigeratorLocal.selected);
-  const [sinkSelected, setsinkSelected] = useState(sinkLocal.selected);
-  const [rangeSelected, setrangeSelected] = useState(rangeLocal.selected);
-  const [dishSelected, setdishSelected] = useState(dishLocal.selected);
+  const [refrigeratorSelected, setrefrigeratorSelected] = useState(refrigeratorLocal.selected || false);
+  const [sinkSelected, setsinkSelected] = useState(sinkLocal.selected || false);
+  const [rangeSelected, setrangeSelected] = useState(rangeLocal.selected || false);
+  const [dishSelected, setdishSelected] = useState(dishLocal.selected || false);
 
-  const [refrigeratorHeight, setrefrigeratorHeight] = useState(refrigeratorLocal.height);
-  const [refrigeratorWidth, setrefrigeratorWidth] = useState(refrigeratorLocal.width);
-  const [refrigeratorCenter, setrefrigeratorCenter] = useState(refrigeratorLocal.center);
+  const [refrigeratorHeight, setrefrigeratorHeight] = useState(refrigeratorLocal.height || '');
+  const [refrigeratorWidth, setrefrigeratorWidth] = useState(refrigeratorLocal.width || '');
+  const [refrigeratorCenter, setrefrigeratorCenter] = useState(refrigeratorLocal.center || '');
   
 
-  const [sinkWidth, setsinkWidth] = useState(sinkLocal.width);
-  const [sinkCenter, setsinkCenter] = useState(sinkLocal.center);
+  const [sinkWidth, setsinkWidth] = useState(sinkLocal.width || '');
+  const [sinkCenter, setsinkCenter] = useState(sinkLocal.center || '');
 
 
-  const [rangeWidth, setrangeWidth] = useState(rangeLocal.width);
-  const [rangeCenter, setrangeCenter] = useState(rangeLocal.center);
+  const [rangeWidth, setrangeWidth] = useState(rangeLocal.width || '');
+  const [rangeCenter, setrangeCenter] = useState(rangeLocal.center || '');
 
 
-  const [dishWidth, setdishWidth] = useState(dishLocal.width);
-  const [dishCenter, setdishCenter] = useState(dishLocal.center);
+  const [dishWidth, setdishWidth] = useState(dishLocal.width || '');
+  const [dishCenter, setdishCenter] = useState(dishLocal.center || '');
 
   const [error, setError] = useState('');
   console.log(refrigeratorHeight);

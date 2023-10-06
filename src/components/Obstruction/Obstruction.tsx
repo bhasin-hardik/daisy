@@ -70,36 +70,34 @@ const Obstruction: React.FC = () => {
     localStorage.setItem(`obstruction_${wallLetter}`, JSON.stringify(data));
   };
    
-  const obstructionDataFromLocalStorage = JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || '{}');
-  const doorDataFromLocalStorage = obstructionDataFromLocalStorage.door;
-  const windowDataFromLocalStorage = obstructionDataFromLocalStorage.window;
-  const beamDataFromLocalStorage = obstructionDataFromLocalStorage.beam;
-  const otherDataFromLocalStorage = obstructionDataFromLocalStorage.other;
-  
+  const obstructionDataFromLocalStorage = wallObstructionDatafromLocal; // Store it locally
+  const doorDataFromLocalStorage = obstructionDataFromLocalStorage.door || {};
+  const windowDataFromLocalStorage = obstructionDataFromLocalStorage.window || {};
+  const beamDataFromLocalStorage = obstructionDataFromLocalStorage.beam || {};
+  const otherDataFromLocalStorage = obstructionDataFromLocalStorage.other || {};
  
+  // Initialize state variables with localStorage values or defaults
+  const [doorSelected, setDoorSelected] = useState(doorDataFromLocalStorage.selected || false);
+  const [windowSelected, setWindowSelected] = useState(windowDataFromLocalStorage.selected || false);
+  const [beamSelected, setBeamSelected] = useState(beamDataFromLocalStorage.selected || false);
+  const [otherSelected, setOtherSelected] = useState(otherDataFromLocalStorage.selected || false);
 
- 
+  const [doorHeight, setDoorHeight] = useState(doorDataFromLocalStorage.height || '');
+  const [doorWidth, setDoorWidth] = useState(doorDataFromLocalStorage.width || '');
+  const [doorCenter, setDoorCenter] = useState(doorDataFromLocalStorage.center || '');
 
-  const [doorSelected, setDoorSelected] = useState(doorDataFromLocalStorage.selected);
-  const [windowSelected, setWindowSelected] = useState(windowDataFromLocalStorage.selected);
-  const [beamSelected, setBeamSelected] = useState(beamDataFromLocalStorage.selected);
-  const [otherSelected, setOtherSelected] = useState(otherDataFromLocalStorage.selected);
+  const [windowHeight, setWindowHeight] = useState(windowDataFromLocalStorage.height || '');
+  const [windowWidth, setWindowWidth] = useState(windowDataFromLocalStorage.width || '');
+  const [windowCenter, setWindowCenter] = useState(windowDataFromLocalStorage.center || '');
 
-  const [doorHeight, setDoorHeight] = useState(doorDataFromLocalStorage.height);
-  const [doorWidth, setDoorWidth] = useState(doorDataFromLocalStorage.width);
-  const [doorCenter, setDoorCenter] = useState(doorDataFromLocalStorage.center);
+  const [beamHeight, setBeamHeight] = useState(beamDataFromLocalStorage.height || '');
+  const [beamWidth, setBeamWidth] = useState(beamDataFromLocalStorage.width || '');
+  const [beamCenter, setBeamCenter] = useState(beamDataFromLocalStorage.center || '');
 
-  const [windowHeight, setWindowHeight] = useState(windowDataFromLocalStorage.height);
-  const [windowWidth, setWindowWidth] = useState(windowDataFromLocalStorage.width);
-  const [windowCenter, setWindowCenter] = useState(windowDataFromLocalStorage.center);
+  const [otherHeight, setOtherHeight] = useState(otherDataFromLocalStorage.height || '');
+  const [otherWidth, setOtherWidth] = useState(otherDataFromLocalStorage.width || '');
+  const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center || '');
 
-  const [beamHeight, setBeamHeight] = useState(beamDataFromLocalStorage.height);
-  const [beamWidth, setBeamWidth] = useState(beamDataFromLocalStorage.width);
-  const [beamCenter, setBeamCenter] = useState(beamDataFromLocalStorage.center);
-
-  const [otherHeight, setOtherHeight] = useState(otherDataFromLocalStorage.height);
-  const [otherWidth, setOtherWidth] = useState(otherDataFromLocalStorage.width);
-  const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center);
 
   const [error, setError] = useState('');
   console.log(doorHeight);
@@ -119,9 +117,6 @@ const Obstruction: React.FC = () => {
   console.log(otherCenter);
 
   
-  
-
-
 
   const handleSubmit = () => {
     setError(''); // Clear any previous error messages
