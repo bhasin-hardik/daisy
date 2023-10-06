@@ -12,7 +12,10 @@ const Obstruction: React.FC = () => {
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
   const wallLetter = count ? String.fromCharCode(64 + parseInt(count)) : '';
-
+  useEffect(() => {
+    // Scroll to the top of the screen when the component mounts
+    window.scrollTo(0, 0);
+  }, [navigate]);
   let wallIndex = 0;
 
   if (count !== undefined) {
@@ -102,6 +105,7 @@ const Obstruction: React.FC = () => {
   const windowDataFromLocalStorage = obstructionDataFromLocalStorage.window;
   const beamDataFromLocalStorage = obstructionDataFromLocalStorage.beam;
   const otherDataFromLocalStorage = obstructionDataFromLocalStorage.other;
+  
  
 
  
@@ -353,9 +357,9 @@ const Obstruction: React.FC = () => {
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('door')}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={doorDataFromLocalStorage.selected === true ? (error && doorDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M77.4688 45.8155V166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
-            <path d="M77.4688 45.8155L142.72 45.4941" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
-            <path d="M143.375 45.4844L142.657 166.634" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 45.8155V166.634" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 45.8155L142.72 45.4941" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M143.375 45.4844L142.657 166.634" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
             <path d="M137.233 100.587C137.233 101.476 136.423 102.198 135.422 102.198C134.422 102.198 133.611 101.476 133.611 100.587C133.611 99.6971 134.422 98.9758 135.422 98.9758C136.423 98.9758 137.233 99.3839 137.233 100.587Z" fill="#615D5A" />
           </svg>
 
@@ -420,10 +424,10 @@ const Obstruction: React.FC = () => {
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('window')}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={windowDataFromLocalStorage.selected === true ? (error && windowDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M62.4375 80.0127V132.005" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
-            <path d="M62.4375 80.0127L160.063 79.875" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965V80.9732" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965L62.4373 133.103" stroke="#615D5A" stroke-width="3" stroke-linecap="round" />
+            <path d="M62.4375 80.0127V132.005" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M62.4375 80.0127L160.063 79.875" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M160.063 132.965V80.9732" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M160.063 132.965L62.4373 133.103" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
           </svg>
 
 
@@ -481,7 +485,7 @@ const Obstruction: React.FC = () => {
           />
         </div>
       </div>
-
+  
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
         <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"

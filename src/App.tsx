@@ -12,9 +12,10 @@ import Appliance from './components/Appliance/Appliance';
 
 import Overview from './components/Overview/Overview';
 import { ApplianceProvider } from './components/Appliance/ApplianceContext';
-import { CabinetsProvider } from './components/Cabinets/CabinetsContext';
+
 
 const App: React.FC = () => {
+ 
 
   return (
     <Router>
@@ -22,10 +23,11 @@ const App: React.FC = () => {
         <MeasureProvider >
           <ObstructionProvider > {/* Wrap Obstruction with ObstructionProvider */}
             <ApplianceProvider>
-              <CabinetsProvider>
+              
                 <div>
                   <Navbar />
                   <Routes>
+                  
                     <Route path="/" element={<Layout />} />
                     <Route path="/measurements" element={<Measure />} />
                     <Route path="/obstruction/:count" element={<Obstruction />} />
@@ -34,7 +36,7 @@ const App: React.FC = () => {
                     <Route path="/overview" element={<Overview />} />
                   </Routes>
                 </div>
-              </CabinetsProvider>
+              
             </ApplianceProvider>
           </ObstructionProvider>
         </MeasureProvider>

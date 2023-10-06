@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import './Overview.css';
 type WallMeasurements = {
   length: number;
@@ -11,7 +12,7 @@ const Overview: React.FC = () => {
   const numWalls = wallsNeededFromStorage;
   const outerBoxStyle: React.CSSProperties = {
     width: '100%',
-   // Adjust as needed for your design
+    // Adjust as needed for your design
     margin: '0 auto', // Center the content horizontally
     display: 'flex',
     flexDirection: 'column',
@@ -66,11 +67,11 @@ const Overview: React.FC = () => {
     marginTop: '40px',
     textAlign: 'center', // Center the text horizontally
   };
- 
- 
+
+
   const layoutBoxStyle: React.CSSProperties = {
-    
-    width:'295px',
+
+    width: '295px',
     height: '58px',
     margin: '20px 0', // Add responsive margin
     display: 'flex',
@@ -78,10 +79,10 @@ const Overview: React.FC = () => {
 
     justifyContent: 'center',
     backgroundColor: '#f9fafb',
-   
+
   };
-  
-  
+
+
 
   const layoutTextStyle: React.CSSProperties = {
 
@@ -134,6 +135,10 @@ const Overview: React.FC = () => {
   const handelSubmit = () => {
     navigate('/nextPage');
   }
+  useEffect(() => {
+    // Scroll to the top of the screen when the component mounts
+    window.scrollTo(0, 0);
+  }, [navigate]);
   const getObstructionDataFromLocalStorage = (wallLetter: string) => {
     const localStorageKey = `obstruction_${wallLetter}`;
     const localStorageData = localStorage.getItem(localStorageKey);
@@ -206,8 +211,8 @@ const Overview: React.FC = () => {
     // Parse and return the data from local storage
     return JSON.parse(localStorageData);
   }
- 
-  
+
+
   return (
     <div style={containerStyle}>
       {/* Header Section */}
@@ -307,7 +312,7 @@ const Overview: React.FC = () => {
         <div className='layout-box'>
           <p style={layoutTextStyle}>Dishwasher - Wall A:</p>
         </div>
-       <div className='layout-box'>
+        <div className='layout-box'>
           <p style={layoutTextStyle}>Dishwasher Width: {getApplianceDataFromLocalStorage('A').dish.selected ? getApplianceDataFromLocalStorage('A').dish.width : ''}</p>
         </div>
         <div></div>
@@ -399,7 +404,7 @@ const Overview: React.FC = () => {
         </div>
         <div style={{ display: 'flex', margin: '20px 20px', gap: '40px' }}>
           <svg width="53" height="58" viewBox="0 0 53 58" fill="none" xmlns="http://www.w3.org/2000/svg"
-          className='svg-class'>
+            className='svg-class'>
             {/* Add the SVG path for your image */}
             <path
               d="M0 7C0 3.13401 3.13401 0 7 0H46C49.866 0 53 3.13401 53 7V51C53 54.866 49.866 58 46 58H7C3.13401 58 0 54.866 0 51V7Z"
@@ -407,7 +412,7 @@ const Overview: React.FC = () => {
             />
             <path opacity="0.6" d="M23.7722 22.5986H25.4362L29.1802 33.5106H27.7882L26.8282 30.5986H22.3962L21.4202 33.5106H20.0282L23.7722 22.5986ZM26.3962 29.3186L24.6362 23.8786H24.5882L22.8122 29.3186H26.3962Z" fill="#0E180A" />
           </svg>
-          <svg width="53" height="58" viewBox="0 0 53 58" fill="none" xmlns="http://www.w3.org/2000/svg"className='svg-class'>
+          <svg width="53" height="58" viewBox="0 0 53 58" fill="none" xmlns="http://www.w3.org/2000/svg" className='svg-class'>
             {/* Add the SVG path for your image */}
             <path
               d="M0 7C0 3.13401 3.13401 0 7 0H46C49.866 0 53 3.13401 53 7V51C53 54.866 49.866 58 46 58H7C3.13401 58 0 54.866 0 51V7Z"
@@ -415,7 +420,7 @@ const Overview: React.FC = () => {
             />
             <path opacity="0.6" d="M21.4132 22.5987H24.3252C25.4772 22.5987 26.3092 22.8121 26.8212 23.2387C27.3439 23.6654 27.6052 24.3161 27.6052 25.1907C27.6052 25.5961 27.5465 25.9481 27.4292 26.2467C27.3225 26.5454 27.1999 26.7961 27.0612 26.9987C26.9012 27.2334 26.7252 27.4361 26.5332 27.6067C26.7892 27.7027 27.0292 27.8254 27.2532 27.9747C27.4772 28.1241 27.6745 28.3054 27.8452 28.5187C28.0159 28.7321 28.1492 28.9881 28.2452 29.2867C28.3519 29.5747 28.4052 29.9161 28.4052 30.3107C28.4052 30.7481 28.3465 31.1641 28.2292 31.5587C28.1119 31.9427 27.9145 32.2787 27.6372 32.5667C27.3599 32.8547 26.9919 33.0841 26.5332 33.2547C26.0745 33.4254 25.5039 33.5107 24.8212 33.5107H21.4132V22.5987ZM22.7572 27.3347H25.4292C25.5785 27.2174 25.7119 27.0627 25.8292 26.8707C25.9359 26.7107 26.0319 26.5134 26.1172 26.2787C26.2025 26.0334 26.2452 25.7401 26.2452 25.3987C26.2452 24.7694 26.0799 24.3481 25.7492 24.1347C25.4292 23.9107 24.9759 23.7987 24.3892 23.7987H22.7572V27.3347ZM22.7572 32.3107H24.9332C25.6372 32.3107 26.1652 32.1294 26.5172 31.7667C26.8692 31.4041 27.0452 30.9187 27.0452 30.3107C27.0452 30.0441 27.0079 29.7987 26.9332 29.5747C26.8692 29.3507 26.7519 29.1587 26.5812 28.9987C26.4105 28.8281 26.1812 28.6947 25.8932 28.5987C25.6052 28.5027 25.2479 28.4547 24.8212 28.4547H22.7572V32.3107Z" fill="#0E180A" />
           </svg>
-          <svg width="53" height="58" viewBox="0 0 53 58" fill="none" xmlns="http://www.w3.org/2000/svg"className='svg-class'>
+          <svg width="53" height="58" viewBox="0 0 53 58" fill="none" xmlns="http://www.w3.org/2000/svg" className='svg-class'>
             {/* Add the SVG path for your image */}
             <path
               d="M0 7C0 3.13401 3.13401 0 7 0H46C49.866 0 53 3.13401 53 7V51C53 54.866 49.866 58 46 58H7C3.13401 58 0 54.866 0 51V7Z" fill={getSelectedImageForCabinet('trashbin') === 'either' ? '#84FFAE75' : "#F9FAFB"} />
@@ -431,15 +436,16 @@ const Overview: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
         }}
-      >       
-          <button
-            onClick={handelSubmit}
-            className="w-80 h-12 mt-2 rounded-md text-white"
-            style={{ background: '#7F56D9', marginBottom: '100px' }}
-          >
-            Submit Details
-          </button>       
+      >
+        <button
+          onClick={handelSubmit}
+          className="w-80 h-12 mt-2 rounded-md text-white"
+          style={{ background: '#7F56D9', marginBottom: '100px' }}
+        >
+          Submit Details
+        </button>
       </div>
+      
     </div>
 
   );

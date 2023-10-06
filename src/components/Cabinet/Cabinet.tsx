@@ -13,6 +13,10 @@ const Cabinet = () => {
     other: localStorage.getItem('other') || ''
   });
   useEffect(() => {
+    // Scroll to the top of the screen when the component mounts
+    window.scrollTo(0, 0);
+  }, [navigate]);
+  useEffect(() => {
     // Whenever selectedOptions change, update the corresponding item in local storage.
     localStorage.setItem('trashbin', selectedOptions.trashbin);
     localStorage.setItem('spiceRack', selectedOptions.spiceRack);
