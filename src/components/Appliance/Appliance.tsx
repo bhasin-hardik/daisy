@@ -3,15 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 
 
-import { useApplianceContext } from './ApplianceContext';
+
 const Appliance: React.FC = () => {
   const navigate = useNavigate();
   // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
-  const { wallApplianceData, setApplianceError } = useApplianceContext();
+ 
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
   let wallIndex = 0;
+  console.log(wallIndex);
   const wallLetter = count ? String.fromCharCode(64 + parseInt(count)) : '';
   useEffect(() => {
     // Scroll to the top of the screen when the component mounts
@@ -22,45 +23,44 @@ const Appliance: React.FC = () => {
   if (count !== undefined) {
     wallIndex = parseInt(count) - 1;
   }
-  const {
-    refrigeratorData,
-    sinkData,
-    rangeData,
-    dishData,
-    
+  const defaultData = {
+    refrigerator: {
+      selected: false,
+      height: '',
+      width: '',
+      center: '',
+    },
+    sink: {
+      selected: false,
 
-  } = wallApplianceData[wallIndex];
-  const [wallApplianceDatafromLocal, setWallApplianceDatafromLocal] = useState(() => {
-    // Initialize with data from local storage or default values
-    const defaultData = {
-      refrigerator: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      sink: {
-        selected: false,
+      width: '',
+      center: '',
+    },
+    range: {
+      selected: false,
 
-        width: '',
-        center: '',
-      },
-      range: {
-        selected: false,
+      width: '',
+      center: '',
+    },
+    dish: {
+      selected: false,
 
-        width: '',
-        center: '',
-      },
-      dish: {
-        selected: false,
-
-        width: '',
-        center: '',
-      },
-    };
-
-    return JSON.parse(localStorage.getItem(`appliance_${wallLetter}`) || 'null') || defaultData;
-  });
+      width: '',
+      center: '',
+    },
+  };
+ 
+  const [wallApplianceDatafromLocal, setWallApplianceDatafromLocal] = useState(defaultData);
+  useEffect(() => {
+    const savedData = localStorage.getItem(`appliance_${wallLetter}`);
+    if (savedData) {
+      setWallApplianceDatafromLocal(JSON.parse(savedData));
+    }
+    else{
+      setWallApplianceDatafromLocal(defaultData);
+    }
+  }, [wallLetter]);
+  
 
  
  
@@ -155,7 +155,7 @@ const Appliance: React.FC = () => {
         refrigeratorWidthValue < 0 ||
         refrigeratorCenterValue < 0
       ) {
-        setApplianceError('Please enter valid positive numbers for refrigerator fields.', wallIndex);
+        
         setError('Please enter valid positive numbers for refrigerator fields.');
         hasError = true;
       }
@@ -171,7 +171,7 @@ const Appliance: React.FC = () => {
         sinkWidthValue < 0 ||
         sinkCenterValue < 0
       ) {
-        setApplianceError('Please enter valid positive numbers for sink fields.', wallIndex);
+       
         setError('Please enter valid positive numbers for sink fields.');
         hasError = true;
       }
@@ -187,7 +187,7 @@ const Appliance: React.FC = () => {
         rangeWidthValue < 0 ||
         rangeCenterValue < 0
       ) {
-        setApplianceError('Please enter valid positive numbers for range fields.', wallIndex);
+      
         setError('Please enter valid positive numbers for range fields.');
         hasError = true;
       }
@@ -203,7 +203,7 @@ const Appliance: React.FC = () => {
         dishWidthValue < 0 ||
         dishCenterValue < 0
       ) {
-        setApplianceError('Please enter valid positive numbers for dish fields.', wallIndex);
+       
         setError('Please enter valid positive numbers for dish fields.');
         hasError = true;
       }
@@ -294,7 +294,7 @@ const Appliance: React.FC = () => {
   const toggleImageSelection = (applianceType: string) => {
     setError(''); // Clear any previous error messages
     const updatedData = { ...wallApplianceDatafromLocal };
-    updatedData[applianceType].selected = !updatedData[applianceType].selected;
+    (updatedData as { [key: string]: { selected: boolean } })[applianceType].selected = !(updatedData as { [key: string]: { selected: boolean } })[applianceType].selected;
     setWallApplianceDatafromLocal(updatedData);
     setWallApplianceDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
@@ -306,50 +306,45 @@ const Appliance: React.FC = () => {
     switch (applianceType) {
       case 'refrigerator':
         setrefrigeratorSelected(!refrigeratorSelected);
-        refrigeratorData.selected = !refrigeratorData.selected;
+        refrigeratorLocal.selected = !refrigeratorLocal.selected;
         if (!refrigeratorSelected) {
           // If refrigerator is deselected, clear input fields
           setrefrigeratorHeight('');
           setrefrigeratorWidth('');
           setrefrigeratorCenter('');
-          refrigeratorData.height = '';
-          refrigeratorData.center = '';
-          refrigeratorData.width = '';
+        
         }
         break;
       case 'sink':
         setsinkSelected(!sinkSelected);
-        sinkData.selected = !sinkData.selected;
+        sinkLocal.selected = !sinkLocal.selected;
         if (!sinkSelected) {
           // If sink is deselected, clear input fields
 
           setsinkWidth('');
           setsinkCenter('');
-          sinkData.center = '';
-          sinkData.width = '';
+     
         }
         break;
       case 'range':
         setrangeSelected(!rangeSelected);
-        rangeData.selected = !rangeData.selected;
+       rangeLocal.selected = !rangeLocal.selected;
         if (!rangeSelected) {
           // If range is deselected, clear input fields
-          rangeData.width = '';
-          rangeData.center = '';
+        
           setrangeWidth('');
           setrangeCenter('');
         }
         break;
       case 'dish':
         setdishSelected(!dishSelected);
-        dishData.selected = !dishData.selected;
+      
         if (!dishSelected) {
           // If dish is deselected, clear input fields
-
+          dishLocal.selected = !dishLocal.selected;
           setdishWidth('');
           setdishCenter('');
-          dishData.width = '';
-          dishData.center = '';
+          
         }
         break;
       default:
@@ -389,7 +384,7 @@ const Appliance: React.FC = () => {
             value={refrigeratorLocal.height}
             onChange={(e) => {
               setrefrigeratorHeight(e.target.value);
-              refrigeratorData.height = e.target.value;
+             
               handleInputChange('refrigerator', 'height', e.target.value);
 
             }}
@@ -406,7 +401,7 @@ const Appliance: React.FC = () => {
             value={refrigeratorLocal.width}
             onChange={(e) => {
               setrefrigeratorWidth(e.target.value);
-              refrigeratorData.width = e.target.value;
+             
               handleInputChange('refrigerator', 'width', e.target.value);
 
             }}
@@ -423,7 +418,7 @@ const Appliance: React.FC = () => {
             value={refrigeratorLocal.center}
             onChange={(e) => {
               setrefrigeratorCenter(e.target.value);
-              refrigeratorData.center = e.target.value;
+             
               handleInputChange('refrigerator', 'center', e.target.value);
 
             }}
@@ -457,7 +452,7 @@ const Appliance: React.FC = () => {
             value={sinkLocal.width}
             onChange={(e) => {
               setsinkWidth(e.target.value);
-              sinkData.width = e.target.value;
+             
               handleInputChange('sink', 'width', e.target.value);
 
             }}
@@ -474,7 +469,7 @@ const Appliance: React.FC = () => {
             value={sinkLocal.center}
             onChange={(e) => {
               setsinkCenter(e.target.value);
-              sinkData.center = e.target.value;
+              
               handleInputChange('sink', 'center', e.target.value);
 
             }}
@@ -511,7 +506,7 @@ const Appliance: React.FC = () => {
             value={rangeLocal.width}
             onChange={(e) => {
               setrangeWidth(e.target.value);
-              rangeData.width = e.target.value;
+             
               handleInputChange('range', 'width', e.target.value);
 
             }}
@@ -528,7 +523,7 @@ const Appliance: React.FC = () => {
             value={rangeLocal.center}
             onChange={(e) => {
               setrangeCenter(e.target.value);
-              rangeData.center = e.target.value;
+             
               handleInputChange('range', 'center', e.target.value);
 
             }}
@@ -563,7 +558,7 @@ const Appliance: React.FC = () => {
             value={dishLocal.width}
             onChange={(e) => {
               setdishWidth(e.target.value);
-              dishData.width = e.target.value;
+             
               handleInputChange('dish', 'width', e.target.value);
 
             }}
@@ -580,7 +575,7 @@ const Appliance: React.FC = () => {
             value={dishLocal.center}
             onChange={(e) => {
               setdishCenter(e.target.value);
-              dishData.center = e.target.value;
+          
               handleInputChange('dish', 'center', e.target.value);
 
             }}

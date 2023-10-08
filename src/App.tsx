@@ -6,12 +6,12 @@ import Obstruction from './components/Obstruction/Obstruction';
 import Measure from './components/Measure/Measure';
 import Cabinet from './components/Cabinet/Cabinet';
 
-import { ObstructionProvider } from './components/Obstruction/ObstructionContext';
+
 
 import Appliance from './components/Appliance/Appliance';
 
 import Overview from './components/Overview/Overview';
-import { ApplianceProvider } from './components/Appliance/ApplianceContext';
+
 
 
 const App: React.FC = () => {
@@ -21,8 +21,7 @@ const App: React.FC = () => {
     <Router>
       
         
-          <ObstructionProvider > {/* Wrap Obstruction with ObstructionProvider */}
-            <ApplianceProvider>
+          
               
                 <div>
                   <Navbar />
@@ -37,8 +36,7 @@ const App: React.FC = () => {
                   </Routes>
                 </div>
               
-            </ApplianceProvider>
-          </ObstructionProvider>
+          
         
       
     </Router>

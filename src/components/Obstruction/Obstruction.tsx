@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // import { useLayoutContext } from '../Layout/LayoutContext';
-import { useObstructionContext } from './ObstructionContext';
+
 
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
-  const { wallObstructionData, setObstructionError } = useObstructionContext();
+ 
   // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
   const numWalls = wallsNeededFromStorage;
@@ -17,53 +17,49 @@ const Obstruction: React.FC = () => {
     window.scrollTo(0, 0);
   }, [navigate]);
   let wallIndex = 0;
-
+  console.log(wallIndex);
   if (count !== undefined) {
     wallIndex = parseInt(count) - 1;
   }
 
 
-  const {
-    doorData,
-    windowData,
-    beamData,
-    otherData,
-    
-  } = wallObstructionData[wallIndex];
   
-  const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(() => {
-    // Initialize with data from local storage or default values
-    const defaultData = {
-      door: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      window: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      beam: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-      other: {
-        selected: false,
-        height: '',
-        width: '',
-        center: '',
-      },
-    };
-
-    const wallDataFromLocalStorage = JSON.parse(localStorage.getItem(`obstruction_${wallLetter}`) || 'null');
-    return wallDataFromLocalStorage || defaultData;
-  });
- 
+  const defaultData = {
+    door: {
+      selected: false,
+      height: '',
+      width: '',
+      center: '',
+    },
+    window: {
+      selected: false,
+      height: '',
+      width: '',
+      center: '',
+    },
+    beam: {
+      selected: false,
+      height: '',
+      width: '',
+      center: '',
+    },
+    other: {
+      selected: false,
+      height: '',
+      width: '',
+      center: '',
+    },
+  };
+  const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(defaultData);
+  useEffect(() => {
+    const savedData = localStorage.getItem(`obstruction_${wallLetter}`);
+    if (savedData) {
+      setWallObstructionDatafromLocal(JSON.parse(savedData));
+    }
+    else{
+      setWallObstructionDatafromLocal(defaultData);
+    }
+  }, [wallLetter]);
 
  
   const updateLocalStorageData = (data: object) => {
@@ -147,22 +143,22 @@ const Obstruction: React.FC = () => {
       otherDataFromLocalStorage.selected && otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0;
 
     if (!isDoorValid && doorDataFromLocalStorage.selected) {
-      setObstructionError('Please fill all door fields with positive values.', wallIndex);
+      
       setError('Please fill all door fields with positive values.');
       return;
     }
     if (!isWindowValid && windowDataFromLocalStorage.selected) {
-      setObstructionError('Please fill all window fields with positive values.', wallIndex);
+     
       setError('Please fill all window fields with positive values.');
       return;
     }
     if (!isBeamValid && beamDataFromLocalStorage.selected) {
-      setObstructionError('Please fill all beam fields with positive values.', wallIndex);
+     
       setError('Please fill all beam fields with positive values.');
       return;
     }
     if (!isOtherValid && otherDataFromLocalStorage.selected) {
-      setObstructionError('Please fill all other fields with positive values.', wallIndex);
+     
       setError('Please fill all other fields with positive values.');
       return;
     }
@@ -254,80 +250,75 @@ const Obstruction: React.FC = () => {
       updateLocalStorageData(newData);
       return newData;
     });
+   
   };
   const toggleImageSelection = (obstructionType: string) => {
-    setError(''); // Clear any previous error messages
-    const updatedData = { ...wallObstructionDatafromLocal };
-    updatedData[obstructionType].selected = !updatedData[obstructionType].selected;
-    setWallObstructionDatafromLocal(updatedData);
+  setError(''); // Clear any previous error messages
+  const updatedData = { ...wallObstructionDatafromLocal };
+  (updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected;
+  setWallObstructionDatafromLocal(updatedData);
 
-    setWallObstructionDatafromLocal((prevData: any) => {
-      const newData = { ...prevData };
-      newData[obstructionType].selected = !newData[obstructionType].selected;
-      updateLocalStorageData(newData);
-      return newData;
-    });
+  setWallObstructionDatafromLocal((prevData: any) => {
+    const newData = { ...prevData };
+    (newData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(newData as { [key: string]: { selected: boolean } })[obstructionType].selected;
+    updateLocalStorageData(newData);
+    return newData;
+  });
 
     switch (obstructionType) {
       case 'door':
         setDoorSelected(!doorSelected);
-        doorData.selected = !doorData.selected;
+        doorDataFromLocalStorage.selected = !doorDataFromLocalStorage.selected;
+       
+       
         if (!doorSelected) {
           // If door is deselected, clear input fields
           setDoorHeight('');
           setDoorWidth('');
           setDoorCenter('');
-          doorData.height = '';
-          doorData.width = '';
-          doorData.center = '';
+         
         }
         break;
       case 'window':
         setWindowSelected(!windowSelected);
-        windowData.selected = !windowData.selected;
+        windowDataFromLocalStorage.selected = !windowDataFromLocalStorage.selected;
+        
         if (!windowSelected) {
           // If window is deselected, clear input fields
           setWindowHeight('');
           setWindowWidth('');
           setWindowCenter('');
-          windowData.height = '';
-          windowData.width = '';
-          windowData.center = '';
+          
         }
         break;
       case 'beam':
         setBeamSelected(!beamSelected);
-        beamData.selected = !beamData.selected;
-        beamData.selected = true;
+        beamDataFromLocalStorage.selected = !beamDataFromLocalStorage.selected;
+       
         if (!beamSelected) {
           // If beam is deselected, clear input fields
           setBeamHeight('');
           setBeamWidth('');
           setBeamCenter('');
-          beamData.height = '';
-          beamData.width = '';
-          beamData.center = '';
+          
         }
         break;
       case 'other':
         setOtherSelected(!otherSelected);
-        otherData.selected = !otherData.selected;
+        otherDataFromLocalStorage.selected = !otherDataFromLocalStorage.selected;
+        
         if (!otherSelected) {
           // If other is deselected, clear input fields
           setOtherHeight('');
           setOtherWidth('');
           setOtherCenter('');
-          otherData.height = '';
-          otherData.width = '';
-          otherData.center = '';
+         
         }
         break;
       default:
         break;
     }
   };
-
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center" style={{ marginLeft: '20px', marginTop: '40px' }} >
       <div className="bg-white p-8 text-center" style={containerStyle}>
@@ -359,10 +350,11 @@ const Obstruction: React.FC = () => {
               backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
 
             }}
+            
             value={doorDataFromLocalStorage.height}
             onChange={(e) => {
               setDoorHeight(e.target.value);
-              doorData.height = e.target.value;
+              
               handleInputChange('door', 'height', e.target.value);
             }}
           />
@@ -379,7 +371,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setDoorWidth(e.target.value);
-              doorData.width = e.target.value;
+             
               handleInputChange('door', 'width', e.target.value);
             }}
           />
@@ -395,7 +387,7 @@ const Obstruction: React.FC = () => {
             value={doorDataFromLocalStorage.center}
             onChange={(e) => {
               setDoorCenter(e.target.value);
-              doorData.center = e.target.value;
+            
               handleInputChange('door', 'center', e.target.value);
             }}
           />
@@ -429,7 +421,7 @@ const Obstruction: React.FC = () => {
             value={windowDataFromLocalStorage.height}
             onChange={(e) => {
               setWindowHeight(e.target.value);
-              windowData.height = e.target.value;
+             
               handleInputChange('window', 'height', e.target.value);
             }}
           />
@@ -445,7 +437,7 @@ const Obstruction: React.FC = () => {
             value={windowDataFromLocalStorage.width}
             onChange={(e) => {
               setWindowWidth(e.target.value);
-              windowData.width = e.target.value;
+              
               handleInputChange('window', 'width', e.target.value);
             }}
           />
@@ -462,7 +454,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setWindowCenter(e.target.value);
-              windowData.center = e.target.value;
+            
               handleInputChange('window', 'center', e.target.value);
             }}
           />
@@ -499,7 +491,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setBeamHeight(e.target.value);
-              beamData.height = e.target.value;
+             
               handleInputChange('beam', 'height', e.target.value);
             }}
           />
@@ -516,7 +508,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setBeamWidth(e.target.value);
-              beamData.width = e.target.value;
+              
               handleInputChange('beam', 'width', e.target.value);
             }}
           />
@@ -533,7 +525,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setBeamCenter(e.target.value);
-              beamData.center = e.target.value;
+              
               handleInputChange('beam', 'center', e.target.value);
             }}
           />
@@ -579,7 +571,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setOtherHeight(e.target.value);
-              otherData.height = e.target.value;
+           
               handleInputChange('other', 'height', e.target.value);
             }}
           />
@@ -596,7 +588,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setOtherWidth(e.target.value);
-              otherData.width = e.target.value;
+              
               handleInputChange('other', 'width', e.target.value);
             }}
           />
@@ -613,7 +605,7 @@ const Obstruction: React.FC = () => {
             onChange={(e) => {
               // Update the context directly here
               setOtherCenter(e.target.value);
-              otherData.center = e.target.value;
+             
               handleInputChange('other', 'center', e.target.value);
             }}
           />
