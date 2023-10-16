@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-
+import './Layout.css';
+import {motion} from 'framer-motion'
 const Layout: React.FC = () => {
   const getSelectedImageFromLocalStorage = () => {
     return localStorage.getItem('selectedImage');
@@ -64,7 +64,11 @@ const Layout: React.FC = () => {
 
 
   return (
-    <div className="flex items-center justify-center" style={{ marginTop: '80px' }}>
+    <motion.div className="flex items-center justify-center main-contain" 
+    initial={{opacity:0}}
+    animate={{opacity:1}}
+    exit={{opacity:0}}
+    >
       <div className="bg-white p-8 text-center">
         {/* Heading */}
         <h1 className="text-3xl font-medium font-actor mb-2">
@@ -80,12 +84,8 @@ const Layout: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
           
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+            
 
             onClick={() => handleImageClick('img1')}
           >
@@ -109,12 +109,8 @@ const Layout: React.FC = () => {
             </svg>
           </div>
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+            
             onClick={() => handleImageClick('img2')}
           >
             <svg
@@ -138,12 +134,8 @@ const Layout: React.FC = () => {
             </svg>
           </div>
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+           
             onClick={() => handleImageClick('img3')}
           >
             <svg
@@ -166,12 +158,8 @@ const Layout: React.FC = () => {
             </svg>
           </div>
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+            
             onClick={() => handleImageClick('img4')}
           >
            <svg
@@ -194,12 +182,8 @@ const Layout: React.FC = () => {
             </svg>
           </div>
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+            
             onClick={() => handleImageClick('img5')}
           >
             <svg
@@ -223,12 +207,8 @@ const Layout: React.FC = () => {
             </svg>
           </div>
           <div
-            className={`block cursor-pointer`}
-            style={{
-              width: '100%', // Ensure the container spans the full width of its parent
-              maxWidth: '192px', // Ensure the container does not exceed its parent's width
-              textAlign: 'center', // Center the content horizontally
-            }}
+            className={'block cursor-pointer boxer'}
+            
             onClick={() => handleImageClick('img6')}
           >
             <svg
@@ -256,18 +236,18 @@ const Layout: React.FC = () => {
 
         {/* Submit button */}
         <button
-          onClick={handleSubmit}
-          className={`w-80 h-12 mt-6 rounded-md ${selectedImage
-            ? 'bg-blue-500 text-white cursor-pointer hover:bg-blue-600'
-            : 'bg-gray-300 text-white cursor-not-allowed'
-            } transition-all duration-200`}
+          onClick={handleSubmit} 
+          className={` h-12 mt-8 rounded-md mb-10 buton  ${selectedImage
+            ? 'text-white cursor-pointer  buton'
+            : ' text-white cursor-not-allowed buton'
+            } transition-all duration-200 `}
           disabled={!selectedImage}
-          style={{ background: '#7F56D9' }}
+          
         >
           {selectedImage ? 'Submit details' : 'Select an image'}
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

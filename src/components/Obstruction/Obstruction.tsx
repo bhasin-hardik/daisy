@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-// import { useLayoutContext } from '../Layout/LayoutContext';
-
-
+import './Obstruction.css'
+import {motion} from 'framer-motion'
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
- 
-  // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
+
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
@@ -23,7 +20,7 @@ const Obstruction: React.FC = () => {
   }
 
 
-  
+
   const defaultData = {
     door: {
       selected: false,
@@ -51,27 +48,31 @@ const Obstruction: React.FC = () => {
     },
   };
   const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(defaultData);
+  const [doorFieldsFocused, setDoorFieldsFocused] = useState(false);
+  const [windowFieldsFocused, setWindowFieldsFocused] = useState(false);
+  const [beamFieldsFocused, setbeamFieldsFocused] = useState(false);
+  const [otherFieldsFocused, setotherFieldsFocused] = useState(false);
   useEffect(() => {
     const savedData = localStorage.getItem(`obstruction_${wallLetter}`);
     if (savedData) {
       setWallObstructionDatafromLocal(JSON.parse(savedData));
     }
-    else{
+    else {
       setWallObstructionDatafromLocal(defaultData);
     }
   }, [wallLetter]);
 
- 
+
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`obstruction_${wallLetter}`, JSON.stringify(data));
   };
-   
+
   const obstructionDataFromLocalStorage = wallObstructionDatafromLocal; // Store it locally
   const doorDataFromLocalStorage = obstructionDataFromLocalStorage.door || {};
   const windowDataFromLocalStorage = obstructionDataFromLocalStorage.window || {};
   const beamDataFromLocalStorage = obstructionDataFromLocalStorage.beam || {};
   const otherDataFromLocalStorage = obstructionDataFromLocalStorage.other || {};
- 
+
   // Initialize state variables with localStorage values or defaults
   const [doorSelected, setDoorSelected] = useState(doorDataFromLocalStorage.selected || false);
   const [windowSelected, setWindowSelected] = useState(windowDataFromLocalStorage.selected || false);
@@ -95,7 +96,10 @@ const Obstruction: React.FC = () => {
   const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center || '');
 
 
-  const [error, setError] = useState('');
+  const [doorerror, setDoorError] = useState('');
+  const [windowerror, setWindowError] = useState('');
+  const [beamerror, setBeamError] = useState('');
+  const [othererror, setOtherError] = useState('');
   console.log(doorHeight);
   console.log(doorWidth);
   console.log(doorCenter);
@@ -112,10 +116,13 @@ const Obstruction: React.FC = () => {
   console.log(otherWidth);
   console.log(otherCenter);
 
-  
+
 
   const handleSubmit = () => {
-    setError(''); // Clear any previous error messages
+    setDoorError(''); // Clear any previous error messages
+    setBeamError(''); // Clear any previous error messages
+    setWindowError(''); // Clear any previous error messages
+    setOtherError(''); // Clear any previous error messages
 
     const doorHeightValue = parseFloat(doorDataFromLocalStorage.height);
     const doorWidthValue = parseFloat(doorDataFromLocalStorage.width);
@@ -134,32 +141,39 @@ const Obstruction: React.FC = () => {
     const otherCenterValue = parseFloat(otherDataFromLocalStorage.center);
 
     const isDoorValid =
-     doorDataFromLocalStorage.selected && doorHeightValue >= 0 && doorWidthValue >= 0 && doorCenterValue >= 0;
-    const isWindowValid =
-      windowDataFromLocalStorage.selected && windowHeightValue >= 0 && windowWidthValue >= 0 && windowCenterValue >= 0;
-    const isBeamValid =
-      beamDataFromLocalStorage.selected && beamHeightValue >= 0 && beamWidthValue >= 0 && beamCenterValue >= 0;
-    const isOtherValid =
-      otherDataFromLocalStorage.selected && otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0;
+      (doorHeightValue >= 0 && doorWidthValue >= 0 && doorCenterValue >= 0) ||
+      (doorHeightValue === 0 && doorWidthValue === 0 && doorCenterValue === 0) ||
+      (!doorHeightValue && !doorWidthValue && !doorCenterValue);
 
-    if (!isDoorValid && doorDataFromLocalStorage.selected) {
-      
-      setError('Please fill all door fields with positive values.');
+    const isWindowValid =
+      (windowHeightValue >= 0 && windowWidthValue >= 0 && windowCenterValue >= 0) ||
+      (windowHeightValue === 0 && windowWidthValue === 0 && windowCenterValue === 0) ||
+      (!windowHeightValue && !windowWidthValue && !windowCenterValue);
+
+    const isBeamValid =
+      (beamHeightValue >= 0 && beamWidthValue >= 0 && beamCenterValue >= 0) ||
+      (beamHeightValue === 0 && beamWidthValue === 0 && beamCenterValue === 0) ||
+      (!beamHeightValue && !beamWidthValue && !beamCenterValue);
+
+    const isOtherValid =
+      (otherHeightValue >= 0 && otherWidthValue >= 0 && otherCenterValue >= 0) ||
+      (otherHeightValue === 0 && otherWidthValue === 0 && otherCenterValue === 0) ||
+      (!otherHeightValue && !otherWidthValue && !otherCenterValue);
+
+    if (!isDoorValid) {
+      setDoorError('Please fill all door fields with positive values.');
       return;
     }
-    if (!isWindowValid && windowDataFromLocalStorage.selected) {
-     
-      setError('Please fill all window fields with positive values.');
+    if (!isWindowValid) {
+      setWindowError('Please fill all window fields with positive values.');
       return;
     }
-    if (!isBeamValid && beamDataFromLocalStorage.selected) {
-     
-      setError('Please fill all beam fields with positive values.');
+    if (!isBeamValid) {
+      setBeamError('Please fill all beam fields with positive values.');
       return;
     }
-    if (!isOtherValid && otherDataFromLocalStorage.selected) {
-     
-      setError('Please fill all other fields with positive values.');
+    if (!isOtherValid) {
+      setOtherError('Please fill all other fields with positive values.');
       return;
     }
 
@@ -195,54 +209,6 @@ const Obstruction: React.FC = () => {
     wallHeading = getWallHeading(parseInt(count));
 
   }
-
-
-  const containerStyle: React.CSSProperties = {
-    width: '100%', // Use a relative width for responsiveness
-    height: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '28px',
-    marginTop: '40px',
-  };
-
-
-
-  const headingStyle: React.CSSProperties = {
-    fontFamily: 'Actor',
-    fontSize: '30px',
-    fontWeight: 400,
-    lineHeight: '36px',
-    letterSpacing: '-0.02em',
-    textAlign: 'center',
-  };
-
-  const subheadingStyle: React.CSSProperties = {
-    fontFamily: 'Actor',
-    fontSize: '18px',
-    fontWeight: 400,
-    lineHeight: '26px',
-    letterSpacing: '-0.02em',
-    textAlign: 'center',
-    color: '#656362',
-  };
-
-
-
-  const inputStyle = {
-    width: '100%',
-    height: 'auto',
-    maxWidth: '295px',
-    backgroundColor: '#F9FAFB',
-    marginBottom: '10px',
-    marginTop: '10px',
-    padding: '20px',
-    color: '#0E180A',
-    fontSize: '16px',
-  };
-
   const handleInputChange = (obstructionType: string, field: string, value: string) => {
     setWallObstructionDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
@@ -250,69 +216,72 @@ const Obstruction: React.FC = () => {
       updateLocalStorageData(newData);
       return newData;
     });
-   
+
   };
   const toggleImageSelection = (obstructionType: string) => {
-  setError(''); // Clear any previous error messages
-  const updatedData = { ...wallObstructionDatafromLocal };
-  (updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected;
-  setWallObstructionDatafromLocal(updatedData);
+    setDoorError(''); // Clear any previous error messages
+    setWindowError(''); // Clear any previous error messages
+    setBeamError(''); // Clear any previous error messages
+    setOtherError(''); // Clear any previous error messages
+    const updatedData = { ...wallObstructionDatafromLocal };
+    (updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(updatedData as { [key: string]: { selected: boolean } })[obstructionType].selected;
+    setWallObstructionDatafromLocal(updatedData);
 
-  setWallObstructionDatafromLocal((prevData: any) => {
-    const newData = { ...prevData };
-    (newData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(newData as { [key: string]: { selected: boolean } })[obstructionType].selected;
-    updateLocalStorageData(newData);
-    return newData;
-  });
+    setWallObstructionDatafromLocal((prevData: any) => {
+      const newData = { ...prevData };
+      (newData as { [key: string]: { selected: boolean } })[obstructionType].selected = !(newData as { [key: string]: { selected: boolean } })[obstructionType].selected;
+      updateLocalStorageData(newData);
+      return newData;
+    });
 
     switch (obstructionType) {
       case 'door':
         setDoorSelected(!doorSelected);
         doorDataFromLocalStorage.selected = !doorDataFromLocalStorage.selected;
-       
-       
+
+
         if (!doorSelected) {
           // If door is deselected, clear input fields
           setDoorHeight('');
           setDoorWidth('');
           setDoorCenter('');
-         
+
         }
         break;
       case 'window':
         setWindowSelected(!windowSelected);
         windowDataFromLocalStorage.selected = !windowDataFromLocalStorage.selected;
-        
+
         if (!windowSelected) {
           // If window is deselected, clear input fields
           setWindowHeight('');
           setWindowWidth('');
           setWindowCenter('');
-          
+
         }
         break;
       case 'beam':
         setBeamSelected(!beamSelected);
         beamDataFromLocalStorage.selected = !beamDataFromLocalStorage.selected;
-       
+
         if (!beamSelected) {
           // If beam is deselected, clear input fields
           setBeamHeight('');
           setBeamWidth('');
           setBeamCenter('');
-          
+
         }
         break;
       case 'other':
         setOtherSelected(!otherSelected);
         otherDataFromLocalStorage.selected = !otherDataFromLocalStorage.selected;
-        
+
         if (!otherSelected) {
           // If other is deselected, clear input fields
           setOtherHeight('');
           setOtherWidth('');
           setOtherCenter('');
-         
+
         }
         break;
       default:
@@ -320,152 +289,216 @@ const Obstruction: React.FC = () => {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{ marginLeft: '20px', marginTop: '40px' }} >
-      <div className="bg-white p-8 text-center" style={containerStyle}>
-        <h1 style={headingStyle}>Obstructions: {wallHeading}</h1>
-        <p style={subheadingStyle}>Please select any obstructions on your wall.</p>
+    <motion.div className="min-h-screen flex flex-col items-center justify-center mainContainer"  
+    initial={{opacity:0}}
+    animate={{opacity:1}}
+    exit={{opacity:0}}>
+      <div className="bg-white p-8 text-center containerStyle">
+        <h1 className='heading'>Obstructions: {wallHeading}</h1>
+        <p className='subheading'>Please select any obstructions on your wall.</p>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('door')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={doorDataFromLocalStorage.selected === true ? (error && doorDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M77.4688 45.8155V166.634" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M77.4688 45.8155L142.72 45.4941" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M143.375 45.4844L142.657 166.634" stroke={doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
+              doorerror && !doorFieldsFocused
+                ? '#F69898' // Case 1
+                : doorDataFromLocalStorage.selected || doorFieldsFocused
+                  ? '#84FFAE75' // Case 2
+                  : '#F9FAFB' // Case 3
+            } />
+            <path d="M77.4688 45.8155V166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 45.8155L142.72 45.4941" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M143.375 45.4844L142.657 166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
             <path d="M137.233 100.587C137.233 101.476 136.423 102.198 135.422 102.198C134.422 102.198 133.611 101.476 133.611 100.587C133.611 99.6971 134.422 98.9758 135.422 98.9758C136.423 98.9758 137.233 99.3839 137.233 100.587Z" fill="#615D5A" />
           </svg>
 
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
           <input
             type="number"
             placeholder="Door height"
-            style={{
-              ...inputStyle,
-              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-
-            }}
-            
+            className='door-input' 
+            data-selected={doorDataFromLocalStorage.selected}
+            data-error={doorerror !== ''}
+            data-focus={doorFieldsFocused}
             value={doorDataFromLocalStorage.height}
             onChange={(e) => {
               setDoorHeight(e.target.value);
-              
+
               handleInputChange('door', 'height', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setDoorFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setDoorFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Door width"
-            style={{
-              ...inputStyle,
-              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='door-input'
+            data-selected={doorDataFromLocalStorage.selected}
+            data-error={doorerror !== ''}
+            data-focus={doorFieldsFocused}
+            
             value={doorDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setDoorWidth(e.target.value);
-             
+
               handleInputChange('door', 'width', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setDoorFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setDoorFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Door center"
-            style={{
-              ...inputStyle,
-              border: doorDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: doorDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='door-input'
+            data-selected={doorDataFromLocalStorage.selected}
+            data-error={doorerror !== ''}
+            data-focus={doorFieldsFocused}
             value={doorDataFromLocalStorage.center}
             onChange={(e) => {
               setDoorCenter(e.target.value);
-            
+
               handleInputChange('door', 'center', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setDoorFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setDoorFieldsFocused(false);
             }}
           />
         </div>
       </div>
-
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+ 
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('window')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={windowDataFromLocalStorage.selected === true ? (error && windowDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M62.4375 80.0127V132.005" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M62.4375 80.0127L160.063 79.875" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965V80.9732" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965L62.4373 133.103" stroke={windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
+              windowerror && !windowFieldsFocused
+                ? '#F69898' // Case 1
+                : windowDataFromLocalStorage.selected || windowFieldsFocused
+                  ? '#84FFAE75' // Case 2
+                  : '#F9FAFB' // Case 3
+            } />
+            <path d="M62.4375 80.0127V132.005" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M62.4375 80.0127L160.063 79.875" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M160.063 132.965V80.9732" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M160.063 132.965L62.4373 133.103" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
           </svg>
 
 
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
           <input
             type="number"
             placeholder="Window height"
-            style={{
-              ...inputStyle,
-              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='window-input'
+            data-selected={windowDataFromLocalStorage.selected}
+            data-error={windowerror !== ''}
+            data-focus={windowFieldsFocused}
+            
             value={windowDataFromLocalStorage.height}
             onChange={(e) => {
               setWindowHeight(e.target.value);
-             
+
               handleInputChange('window', 'height', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setWindowFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setWindowFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Window width"
-            style={{
-              ...inputStyle,
-              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='window-input'
+            data-selected={windowDataFromLocalStorage.selected}
+            data-error={windowerror !== ''}
+            data-focus={windowFieldsFocused}
             value={windowDataFromLocalStorage.width}
             onChange={(e) => {
               setWindowWidth(e.target.value);
-              
+
               handleInputChange('window', 'width', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setWindowFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setWindowFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Window center"
-            style={{
-              ...inputStyle,
-              border: windowDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: windowDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='window-input'
+            data-selected={windowDataFromLocalStorage.selected}
+            data-error={windowerror !== ''}
+            data-focus={windowFieldsFocused}
             value={windowDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setWindowCenter(e.target.value);
-            
+
               handleInputChange('window', 'center', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setWindowFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setWindowFieldsFocused(false);
             }}
           />
         </div>
       </div>
-  
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
             onClick={() => toggleImageSelection('beam')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={beamDataFromLocalStorage.selected === true ? (error && beamDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
+              beamerror && !beamFieldsFocused
+                ? '#F69898' // Case 1
+                : beamDataFromLocalStorage.selected || beamFieldsFocused
+                  ? '#84FFAE75' // Case 2
+                  : '#F9FAFB' // Case 3
+            }
+            />
             <rect x="60.125" y="64.3438" width="101.75" height="84.3125" rx="20" fill="url(#pattern0)" />
             <defs>
               <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -478,152 +511,198 @@ const Obstruction: React.FC = () => {
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
           <input
             type="number"
             placeholder="Beam height"
-            style={{
-              ...inputStyle,
-              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='beam-input'
+            data-selected={beamDataFromLocalStorage.selected}
+            data-error={beamerror !== ''}
+            data-focus={beamFieldsFocused}
+            
             value={beamDataFromLocalStorage.height}
             onChange={(e) => {
               // Update the context directly here
               setBeamHeight(e.target.value);
-             
+
               handleInputChange('beam', 'height', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setbeamFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setbeamFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Beam width"
-            style={{
-              ...inputStyle,
-              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='beam-input'
+            data-selected={beamDataFromLocalStorage.selected}
+            data-error={beamerror !== ''}
+            data-focus={beamFieldsFocused}
             value={beamDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setBeamWidth(e.target.value);
-              
+
               handleInputChange('beam', 'width', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setbeamFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setbeamFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Beam center"
-            style={{
-              ...inputStyle,
-              border: beamDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: beamDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='beam-input'
+            data-selected={beamDataFromLocalStorage.selected}
+            data-error={beamerror !== ''}
+            data-focus={beamFieldsFocused}
             value={beamDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setBeamCenter(e.target.value);
-              
+
               handleInputChange('beam', 'center', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setbeamFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setbeamFieldsFocused(false);
             }}
           />
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 53" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('other')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V46C222 49.866 218.866 53 215 53H7C3.134 53 0 49.866 0 46V7Z" fill={otherDataFromLocalStorage.selected === true ? (error && otherDataFromLocalStorage.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V46C222 49.866 218.866 53 215 53H7C3.134 53 0 49.866 0 46V7Z" fill={
+              othererror && !otherFieldsFocused
+                ? '#F69898' // Case 1
+                : otherDataFromLocalStorage.selected || otherFieldsFocused
+                  ? '#84FFAE75' // Case 2
+                  : '#F9FAFB' // Case 3
+            } />
           </svg>
 
-          <p
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: 'Actor',
-              fontSize: '16px',
-              fontWeight: 400,
-              lineHeight: '20px',
-              letterSpacing: '-0.02em',
-              textAlign: 'center',
-              zIndex: 1,
-            }}
-          >
+          <p className='other' >
             Other
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
           <input
             type="number"
             placeholder="Other height"
-            style={{
-              ...inputStyle,
-              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='other-input'
+            data-selected={otherDataFromLocalStorage.selected}
+            data-error={othererror !== ''}
+            data-focus={otherFieldsFocused}
             value={otherDataFromLocalStorage.height}
             onChange={(e) => {
               // Update the context directly here
               setOtherHeight(e.target.value);
-           
+
               handleInputChange('other', 'height', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setotherFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setotherFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Other width"
-            style={{
-              ...inputStyle,
-              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='other-input'
+            data-selected={otherDataFromLocalStorage.selected}
+            data-error={othererror !== ''}
+            data-focus={otherFieldsFocused}
             value={otherDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
               setOtherWidth(e.target.value);
-              
+
               handleInputChange('other', 'width', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setotherFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setotherFieldsFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Other center"
-            style={{
-              ...inputStyle,
-              border: otherDataFromLocalStorage.selected ? '2px solid black' : 'none',
-              backgroundColor: otherDataFromLocalStorage.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='other-input'
+            data-selected={otherDataFromLocalStorage.selected}
+            data-error={othererror !== ''}
+            data-focus={otherFieldsFocused}
             value={otherDataFromLocalStorage.center}
             onChange={(e) => {
               // Update the context directly here
               setOtherCenter(e.target.value);
-             
+
               handleInputChange('other', 'center', e.target.value);
+            }}
+            onFocus={() => {
+              // Set doorFieldsFocused to true when focused
+              setotherFieldsFocused(true);
+            }}
+            onBlur={() => {
+              // Set doorFieldsFocused to false when blurred
+              setotherFieldsFocused(false);
             }}
           />
         </div>
       </div>
 
-      {error && (
-        <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>
+      {doorerror && (
+        <p className='error'>{doorerror}</p>
+      )}
+      {windowerror && (
+        <p className='error'>{windowerror}</p>
+      )}
+      {beamerror && (
+        <p className='error'>{beamerror}</p>
       )}
 
+      {othererror && (
+        <p className='error'>{othererror}</p>
+      )}
+     <div className="button-container">
       <button
         onClick={handleSubmit}
-        className="w-80 h-12 mt-4 rounded-md text-white"
-        style={{ background: '#7F56D9' }}
+        className="h-12 mt-8 rounded-md text-white mb-12 buton"
+        
       >
         Submit Details
       </button>
-    </div>
+      </div>
+    </motion.div>
   );
 };
 

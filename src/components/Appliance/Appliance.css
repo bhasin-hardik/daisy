@@ -1,0 +1,180 @@
+.mainContain {
+    margin-left: 20px;
+    
+}
+
+.containStyle {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 40px;
+}
+
+.heading {
+    font-family: 'Actor';
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+.subheading {
+    font-family: 'Actor';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    color: #656362;
+}
+
+.BoxOuter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.inputStyle {
+    width: 100%;
+    height: auto;
+    max-width: 295px;
+    background-color: #F9FAFB;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 20px;
+    color: #0E180A;
+    font-size: 16px;
+}
+input[type='number']{
+    border-radius: 5px;
+}
+
+.BoxInner {
+    position: relative;
+    width: 100%;
+    max-width: 222px;
+}
+.BoxInnerA {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    max-width: 222px;
+}
+
+.inputOuter {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    max-width:300px;
+}
+
+.ref-input, .range-input,.sink-input,.dish-input {
+    width: 100%;
+    height: auto;
+    max-width: 295px;
+    max-height: 58px;
+    background-color: #F9FAFB;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 20px;
+    color: #0E180A;
+    font-size: 16px;
+    background-color: #F9FAFB;
+}
+
+
+
+
+.ref-input[data-error='true'] {
+    background-color: #F69898;
+    border: 2px solid black;
+}
+
+.ref-input[data-focus='true'],
+.ref-input[data-selected='true'] {
+    background-color: #84FFAE75;
+    border: 2px solid black;
+}
+
+
+.error {
+    font-weight: bold;
+    color: red;
+    font-family: 'Actor';
+    margin-top: 10px;
+}
+.button-container{
+    width: 100%;
+    max-width: 320px;
+}
+.buton{
+    background: #7F56D9;
+    width:100%;
+    max-width: 320px;
+}
+@media screen and (max-width:353px){
+    .button-container{
+        width: 224px;
+    }
+   
+
+}
+@media screen and (max-width:583px){
+    .BoxOuter{
+        margin-right: 10px;
+    }
+   
+
+}
+
+
+
+
+
+.sink-input[data-error='true'] {
+    background-color: #F69898;
+    border: 2px solid black;
+}
+
+.sink-input[data-focus='true'],
+.sink-input[data-selected='true'] {
+    background-color: #84FFAE75;
+    border: 2px solid black;
+}
+
+
+
+
+
+.range-input[data-error='true'] {
+    background-color: #F69898;
+    border: 2px solid black;
+}
+
+.range-input[data-focus='true'],
+.range-input[data-selected='true'] {
+    background-color: #84FFAE75;
+    border: 2px solid black;
+}
+
+
+
+
+.dish-input[data-error='true'] {
+    background-color: #F69898;
+    border: 2px solid black;
+}
+
+.dish-input[data-focus='true'],
+.dish-input[data-selected='true'] {
+    background-color: #84FFAE75;
+    border: 2px solid black;
+}

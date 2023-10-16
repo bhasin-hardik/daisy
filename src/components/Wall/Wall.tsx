@@ -1,99 +1,81 @@
 import React, { useState, useEffect } from 'react';
+import './Wall.css';
 
 interface WallProps {
   wallName: string;
-  l: number | ''; // Add length prop
-  h: number | ''; // Add height prop
-  onValidationChange: (isValid: boolean) => void; // Callback to update parent component
+  l: number | '';
+  h: number | '';
+  onValidationChange: (isValid: boolean) => void;
   onMeasurementChange: (length: number, height: number) => void;
-
- 
+  isFocused: boolean;
+  setFocused: (focused: boolean) => void; // New prop to update focus state
 }
 
-const Wall: React.FC<WallProps> = ({ wallName, onValidationChange,onMeasurementChange, l,h }) => {
+const Wall: React.FC<WallProps> = ({ wallName, onValidationChange, onMeasurementChange, l, h, setFocused }) => {
   const [length, setLength] = useState<number | ''>(l);
   const [height, setHeight] = useState<number | ''>(h);
-  const [isValid, setIsValid] = useState(false); // State to track validation
+  const [isValid, setIsValid] = useState(false);
   console.log(isValid);
-  // Validation function for length and height
-  const validateInputs = () => {
-    const isLengthValid = length !== '';
-    const isHeightValid = height  !== '';
-    const isValid = isLengthValid && isHeightValid;
-    setIsValid(isValid);
-    onValidationChange(isValid); // Notify parent component of validation state
+
+  // Event handler for input focus
+  const handleFocus = () => {
+    setFocused(true);
   };
+
+  // Event handler for input blur
   const handleBlur = () => {
+    setFocused(false);
     if (!isNaN(Number(length)) && !isNaN(Number(height))) {
       onMeasurementChange(Number(length), Number(height));
     }
   };
 
-  // Call validation function whenever length or height changes
   useEffect(() => {
-    validateInputs();
+    // Validation logic remains the same
+    const isLengthValid = length !== '';
+    const isHeightValid = height !== '';
+    const isValid = isLengthValid && isHeightValid;
+    setIsValid(isValid);
+    onValidationChange(isValid);
   }, [length, height]);
- 
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-        <div style={{ width: '114px', height: '36px', fontFamily: 'Actor', fontSize: '18px', fontWeight: 400, lineHeight: '36px', letterSpacing: '-0.02em', textAlign: 'left' }}>
+    <div className='box-1'>
+      <div className='box-2'> 
+        <div className='wall-name'>
           {wallName}:
         </div>
-        <input
-          type="number"
-          id={`length_${wallName}`}
-          name={`length_${wallName}`}
-          className="border p-2"
-          style={{
+        <div className='input-container'>
+          <input
+            type="number"
+            id={`length_${wallName}`}
+            name={`length_${wallName}`}
+            className="border p-2 input-text"
             
-            fontSize: '16px',
-            fontWeight: 400,
-            lineHeight: '20px',
-            letterSpacing: '-0.02em',
-            textAlign: 'left',
-            background: '#F9FAFB',
-            color: '#0E180A',
-            border: '1px solid #ccc',
-            marginLeft: '10px',
-            
-          }}
-          placeholder={`Enter Wall Length`}
-          value={length === '' ? '' : String(length)}
-          onBlur={handleBlur}
-          onChange={(e) => {
-            const newValue = e.target.value.trim(); // Remove leading and trailing whitespace
-            setLength(newValue === '' ? '' : parseFloat(newValue));
-          }} // Parse input value to number
-        />
-        
-      </div>
-      <div style={{ marginLeft: '124px', marginBottom: '10px' }}>
-        <input
-         type="number"
-          id={`height_${wallName}`}
-          name={`height_${wallName}`}
-          className="border p-2"
-          style={{
-           
-            fontSize: '16px',
-            fontWeight: 400,
-            lineHeight: '20px',
-            letterSpacing: '-0.02em',
-            textAlign: 'left',
-            background: '#F9FAFB',
-            color: '#0E180A',
-            border: '1px solid #ccc',
-           
-          }}
-          placeholder={`Enter Wall Height`}
-          value={height === '' ? '' : String(height)}
-          onBlur={handleBlur}
-          onChange={(e) => {
-            const newValue = e.target.value.trim(); // Remove leading and trailing whitespace
-            setHeight(newValue === '' ? '' : parseFloat(newValue));
-          }} // Parse input value to number
-        />
+            placeholder={`Enter Wall Length`}
+            value={length === '' ? '' : String(length)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={(e) => { 
+              const newValue = e.target.value.trim();
+              setLength(newValue === '' ? '' : parseFloat(newValue));
+            }}
+          />
+          <input
+            type="number"
+            id={`height_${wallName}`}
+            name={`height_${wallName}`}
+            className="border p-2 input-text spcl"
+            placeholder={`Enter Wall Height`}
+            value={height === '' ? '' : String(height)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={(e) => {
+              const newValue = e.target.value.trim();
+              setHeight(newValue === '' ? '' : parseFloat(newValue));
+            }}
+          />
+        </div>
       </div>
     </div>
   );

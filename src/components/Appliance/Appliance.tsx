@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-
+import './Appliance.css'
+import {motion} from 'framer-motion';
 
 
 const Appliance: React.FC = () => {
   const navigate = useNavigate();
-  // const { calculateWallsNeeded, selectedLayout } = useLayoutContext();
- 
+
+
   const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
@@ -15,7 +15,7 @@ const Appliance: React.FC = () => {
   console.log(wallIndex);
   const wallLetter = count ? String.fromCharCode(64 + parseInt(count)) : '';
   useEffect(() => {
-    // Scroll to the top of the screen when the component mounts
+
     window.scrollTo(0, 0);
   }, [navigate]);
 
@@ -49,29 +49,35 @@ const Appliance: React.FC = () => {
       center: '',
     },
   };
- 
+
   const [wallApplianceDatafromLocal, setWallApplianceDatafromLocal] = useState(defaultData);
+
+  const [refFieldsFocused, setrefFieldFocused] = useState(false);
+  const [sinkFieldsFocused, setsinkFieldFocused] = useState(false);
+  const [rangeFieldsFocused, setrangeFieldFocused] = useState(false);
+  const [dishFieldsFocused, setdishFieldFocused] = useState(false);
+
   useEffect(() => {
     const savedData = localStorage.getItem(`appliance_${wallLetter}`);
     if (savedData) {
       setWallApplianceDatafromLocal(JSON.parse(savedData));
     }
-    else{
+    else {
       setWallApplianceDatafromLocal(defaultData);
     }
   }, [wallLetter]);
-  
 
- 
- 
+
+
+
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`appliance_${wallLetter}`, JSON.stringify(data));
   };
   const applianceDataFromLocalStorage = wallApplianceDatafromLocal;
-  
+
   const refrigeratorLocal = applianceDataFromLocalStorage.refrigerator || {};
   const sinkLocal = applianceDataFromLocalStorage.sink || {};
-  const rangeLocal = applianceDataFromLocalStorage.range || {}; 
+  const rangeLocal = applianceDataFromLocalStorage.range || {};
   const dishLocal = applianceDataFromLocalStorage.dish || {};
 
 
@@ -85,7 +91,7 @@ const Appliance: React.FC = () => {
   const [refrigeratorHeight, setrefrigeratorHeight] = useState(refrigeratorLocal.height || '');
   const [refrigeratorWidth, setrefrigeratorWidth] = useState(refrigeratorLocal.width || '');
   const [refrigeratorCenter, setrefrigeratorCenter] = useState(refrigeratorLocal.center || '');
-  
+
 
   const [sinkWidth, setsinkWidth] = useState(sinkLocal.width || '');
   const [sinkCenter, setsinkCenter] = useState(sinkLocal.center || '');
@@ -98,7 +104,10 @@ const Appliance: React.FC = () => {
   const [dishWidth, setdishWidth] = useState(dishLocal.width || '');
   const [dishCenter, setdishCenter] = useState(dishLocal.center || '');
 
-  const [error, setError] = useState('');
+  const [referror, setrefError] = useState('');
+  const [sinkerror, setsinkError] = useState('');
+  const [rangeerror, setrangeError] = useState('');
+  const [disherror, setdishError] = useState('');
   console.log(refrigeratorHeight);
   console.log(refrigeratorWidth);
   console.log(refrigeratorCenter);
@@ -117,115 +126,98 @@ const Appliance: React.FC = () => {
     setsinkSelected(false);
     setrangeSelected(false);
     setdishSelected(false);
-  
-  
+
+
     setrefrigeratorHeight('');
     setrefrigeratorWidth('');
     setrefrigeratorCenter('');
-  
-    
+
+
     setsinkWidth('');
     setsinkCenter('');
-  
-    
+
+
     setdishWidth('');
     setdishCenter('');
-  
-   
+
+
     setrangeWidth('');
     setrangeCenter('');
-  
+
     // Clear local storage data
-    
+
   };
 
   const handleSubmit = () => {
-    let hasError = false;
+    setrefError('');
+    setsinkError('');
+    setrangeError('');
+    setdishError('');
+    const refrigeratorHeightValue = parseFloat(refrigeratorLocal.height);
+    const refrigeratorWidthValue = parseFloat(refrigeratorLocal.width);
+    const refrigeratorCenterValue = parseFloat(refrigeratorLocal.center);
 
-    if (refrigeratorSelected) {
-      const refrigeratorHeightValue = parseFloat(refrigeratorLocal.height);
-      const refrigeratorWidthValue = parseFloat(refrigeratorLocal.width);
-      const refrigeratorCenterValue = parseFloat(refrigeratorLocal.center);
+    const sinkWidthValue = parseFloat(sinkLocal.width);
+    const sinkCenterValue = parseFloat(sinkLocal.center);
 
-      if (
-        isNaN(refrigeratorHeightValue) ||
-        isNaN(refrigeratorWidthValue) ||
-        isNaN(refrigeratorCenterValue) ||
-        refrigeratorHeightValue < 0 ||
-        refrigeratorWidthValue < 0 ||
-        refrigeratorCenterValue < 0
-      ) {
-        
-        setError('Please enter valid positive numbers for refrigerator fields.');
-        hasError = true;
-      }
+    const rangeWidthValue = parseFloat(rangeLocal.width);
+    const rangeCenterValue = parseFloat(rangeLocal.center);
+
+    const dishWidthValue = parseFloat(dishLocal.width);
+    const dishCenterValue = parseFloat(dishLocal.center);
+
+    const isRefValid =
+      (refrigeratorHeightValue >= 0 && refrigeratorWidthValue >= 0 && refrigeratorCenterValue >= 0) ||
+      (refrigeratorHeightValue === 0 && refrigeratorWidthValue === 0 && refrigeratorCenterValue === 0) ||
+      (!refrigeratorHeightValue && !refrigeratorWidthValue && !refrigeratorCenterValue);
+
+    const isSinkValid =
+      (sinkWidthValue >= 0 && sinkCenterValue >= 0) ||
+      (sinkWidthValue === 0 && sinkCenterValue === 0) ||
+      (!sinkWidthValue && !sinkCenterValue);
+
+    const isRangeValid =
+      (rangeWidthValue >= 0 && rangeCenterValue >= 0) ||
+      (rangeWidthValue === 0 && rangeCenterValue === 0) ||
+      (!rangeWidthValue && !rangeCenterValue);
+
+    const isDishValid =
+      (dishWidthValue >= 0 && dishCenterValue >= 0) ||
+      (dishWidthValue === 0 && dishCenterValue === 0) ||
+      (!dishWidthValue && !dishCenterValue);
+    if (!isRefValid) {
+      setrefError('Please fill all positive values for refrigerator.');
+      return;
+    }
+    if (!isSinkValid) {
+      setsinkError('Please fill all positive values for Sink.');
+      return;
+    }
+    if (!isRangeValid) {
+      setrangeError('Please fill all positive values for Range.');
+      return;
+    }
+    if (!isDishValid) {
+      setdishError('Please fill all positive values for Dish.');
+      return;
     }
 
-    if (sinkSelected) {
-      const sinkWidthValue = parseFloat(sinkLocal.width);
-      const sinkCenterValue = parseFloat(sinkLocal.center);
-
-      if (
-        isNaN(sinkWidthValue) ||
-        isNaN(sinkCenterValue) ||
-        sinkWidthValue < 0 ||
-        sinkCenterValue < 0
-      ) {
-       
-        setError('Please enter valid positive numbers for sink fields.');
-        hasError = true;
-      }
-    }
-
-    if (rangeSelected) {
-      const rangeWidthValue = parseFloat(rangeLocal.width);
-      const rangeCenterValue = parseFloat(rangeLocal.center);
-
-      if (
-        isNaN(rangeWidthValue) ||
-        isNaN(rangeCenterValue) ||
-        rangeWidthValue < 0 ||
-        rangeCenterValue < 0
-      ) {
-      
-        setError('Please enter valid positive numbers for range fields.');
-        hasError = true;
-      }
-    }
-
-    if (dishSelected) {
-      const dishWidthValue = parseFloat(dishLocal.width);
-      const dishCenterValue = parseFloat(dishLocal.center);
-
-      if (
-        isNaN(dishWidthValue) ||
-        isNaN(dishCenterValue) ||
-        dishWidthValue < 0 ||
-        dishCenterValue < 0
-      ) {
-       
-        setError('Please enter valid positive numbers for dish fields.');
-        hasError = true;
-      }
-    }
-
-    if (!hasError) {
-      if (count) {
-        const nextNumWalls = parseInt(count) + 1; // Increment the parameter
-        if (numWalls > 1) {
-          if (nextNumWalls <= numWalls) {
-            resetApplianceData();
-            navigate(`/appliance/${nextNumWalls}`); // Navigate to the next Obstruction component
-          } else {
-            navigate('/cabinet');
-          }
+    if (count) {
+      const nextNumWalls = parseInt(count) + 1; // Increment the parameter
+      if (numWalls > 1) {
+        if (nextNumWalls <= numWalls) {
+          resetApplianceData();
+          navigate(`/appliance/${nextNumWalls}`); // Navigate to the next Obstruction component
         } else {
           navigate('/cabinet');
         }
       } else {
         navigate('/cabinet');
       }
+    } else {
+      navigate('/cabinet');
     }
+
   };
 
   const getWallHeading = (wallNumber: number) => {
@@ -241,47 +233,7 @@ const Appliance: React.FC = () => {
   }
 
 
-  const containerStyle: React.CSSProperties = {
-    width: '100%',
-    height: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '28px',
-    marginTop: '40px',
-  };
 
-  const headingStyle: React.CSSProperties = {
-    fontFamily: 'Actor',
-    fontSize: '30px',
-    fontWeight: 400,
-    lineHeight: '36px',
-    letterSpacing: '-0.02em',
-    textAlign: 'center',
-  };
-
-  const subheadingStyle: React.CSSProperties = {
-    fontFamily: 'Actor',
-    fontSize: '18px',
-    fontWeight: 400,
-    lineHeight: '26px',
-    letterSpacing: '-0.02em',
-    textAlign: 'center',
-    color: '#656362',
-  };
-
-   const inputStyle = {
-    width: '100%',
-    height: 'auto',
-    maxWidth: '295px',
-    backgroundColor: '#F9FAFB',
-    marginBottom: '10px',
-    marginTop: '10px',
-    padding: '20px',
-    color: '#0E180A',
-    fontSize: '16px',
-  };
   const handleInputChange = (applianceType: string, field: string, value: string) => {
     setWallApplianceDatafromLocal((prevData: any) => {
       const newData = { ...prevData };
@@ -292,7 +244,10 @@ const Appliance: React.FC = () => {
   };
 
   const toggleImageSelection = (applianceType: string) => {
-    setError(''); // Clear any previous error messages
+    setrefError('');
+    setsinkError('');
+    setrangeError('');
+    setdishError('');
     const updatedData = { ...wallApplianceDatafromLocal };
     (updatedData as { [key: string]: { selected: boolean } })[applianceType].selected = !(updatedData as { [key: string]: { selected: boolean } })[applianceType].selected;
     setWallApplianceDatafromLocal(updatedData);
@@ -312,7 +267,7 @@ const Appliance: React.FC = () => {
           setrefrigeratorHeight('');
           setrefrigeratorWidth('');
           setrefrigeratorCenter('');
-        
+
         }
         break;
       case 'sink':
@@ -323,278 +278,384 @@ const Appliance: React.FC = () => {
 
           setsinkWidth('');
           setsinkCenter('');
-     
+
         }
         break;
       case 'range':
         setrangeSelected(!rangeSelected);
-       rangeLocal.selected = !rangeLocal.selected;
+        rangeLocal.selected = !rangeLocal.selected;
         if (!rangeSelected) {
           // If range is deselected, clear input fields
-        
+
           setrangeWidth('');
           setrangeCenter('');
         }
         break;
       case 'dish':
         setdishSelected(!dishSelected);
-      
+        dishLocal.selected = !dishLocal.selected;
+
         if (!dishSelected) {
           // If dish is deselected, clear input fields
           dishLocal.selected = !dishLocal.selected;
           setdishWidth('');
           setdishCenter('');
-          
+
         }
         break;
       default:
         break;
     }
   };
- 
-  
+
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{marginLeft: '20px', marginTop: '30px'}}  >
-      <div className="bg-white p-8 text-center" style={containerStyle}>
-        <h1 style={headingStyle}>Appliances: {wallHeading}</h1>
-        <p style={subheadingStyle}>Please select any obstructions on your wall.</p>
+    <motion.div className="min-h-screen flex flex-col items-center justify-center mainContain" 
+    initial={{opacity:0}}
+    animate={{opacity:1}}
+    exit={{opacity:0}} >
+      <div className="bg-white p-8 text-center containStyle" >
+        <h1 className='heading'>Appliances: {wallHeading}</h1>
+        <p className='subheading'>Please select any obstructions on your wall.</p>
       </div>
-  
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative', width: '100%', maxWidth: '222px' }}>
+
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('refrigerator')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={refrigeratorLocal.selected === true ? (error && refrigeratorLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M77.4688 45.8157V166.634" stroke={refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M77.4688 45.8157L142.72 45.4957" stroke={refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M143.375 45.4844L142.647 166.634" stroke={refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z"
+              fill={
+                referror && !refFieldsFocused
+                  ? '#F69898' // Case 1
+                  : refrigeratorLocal.selected || refFieldsFocused
+                    ? '#84FFAE75' // Case 2
+                    : '#F9FAFB' // Case 3
+              } />
+            <path d="M77.4688 45.8157V166.634" stroke={referror || refFieldsFocused || refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 45.8157L142.72 45.4957" stroke={referror || refFieldsFocused || refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M143.375 45.4844L142.647 166.634" stroke={referror || refFieldsFocused || refrigeratorLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
           </svg>
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
           <input
             type="number"
             placeholder="Refrigerator height"
-            style={{
-              ...inputStyle,
-              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='ref-input'
+            data-selected={refrigeratorLocal.selected}
+            data-error={referror !== ''}
+            data-focus={refFieldsFocused}
+
             value={refrigeratorLocal.height}
             onChange={(e) => {
               setrefrigeratorHeight(e.target.value);
-             
+
               handleInputChange('refrigerator', 'height', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setrefFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setrefFieldFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Refrigerator width"
-            style={{
-              ...inputStyle,
-              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='ref-input'
+            data-selected={refrigeratorLocal.selected}
+            data-error={referror !== ''}
+            data-focus={refFieldsFocused}
             value={refrigeratorLocal.width}
             onChange={(e) => {
               setrefrigeratorWidth(e.target.value);
-             
+
               handleInputChange('refrigerator', 'width', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setrefFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setrefFieldFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Refrigerator center"
-            style={{
-              ...inputStyle,
-              border: refrigeratorLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: refrigeratorLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='ref-input'
+            data-selected={refrigeratorLocal.selected}
+            data-error={referror !== ''}
+            data-focus={refFieldsFocused}
             value={refrigeratorLocal.center}
             onChange={(e) => {
               setrefrigeratorCenter(e.target.value);
-             
+
               handleInputChange('refrigerator', 'center', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setrefFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setrefFieldFocused(false);
             }}
           />
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px',width: '100%', maxWidth: '222px'}}>
+      <div className='BoxOuter'>
+        <div className='BoxInner'>
           <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('sink')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={sinkLocal.selected === true ? (error && sinkLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <rect x="71.5312" y="79.7656" width="77.7812" height="53.4688" rx="3" fill="#F9FAFB" fill-opacity="0.46" stroke={sinkLocal.selected ===  true ? 'black' : '#615D5A'} stroke-width="2" />
-            <path d="M115.25 106.5C115.25 108.805 113.131 110.747 110.422 110.747C107.712 110.747 105.594 108.805 105.594 106.5C105.594 104.195 107.712 102.253 110.422 102.253C113.131 102.253 115.25 104.195 115.25 106.5Z" fill="#F9FAFB" fill-opacity="0.46" stroke={sinkLocal.selected ===  true ? 'black' : '#615D5A'} stroke-width="0.75" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z"
+              fill={
+                sinkerror && !sinkFieldsFocused
+                  ? '#F69898' // Case 1
+                  : sinkLocal.selected || sinkFieldsFocused
+                    ? '#84FFAE75' // Case 2
+                    : '#F9FAFB' // Case 3
+              } />
+            <rect x="71.5312" y="79.7656" width="77.7812" height="53.4688" rx="3" fill="#F9FAFB" fill-opacity="0.46" stroke={sinkerror || sinkFieldsFocused || sinkLocal.selected === true ? 'black' : '#615D5A'} stroke-width="2" />
+            <path d="M115.25 106.5C115.25 108.805 113.131 110.747 110.422 110.747C107.712 110.747 105.594 108.805 105.594 106.5C105.594 104.195 107.712 102.253 110.422 102.253C113.131 102.253 115.25 104.195 115.25 106.5Z" fill="#F9FAFB" fill-opacity="0.46" stroke={sinkLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
           </svg>
 
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
 
 
           <input
             type="number"
             placeholder="Sink width"
-            style={{
-              ...inputStyle,
-              border: sinkLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: sinkLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='sink-input'
+            data-selected={sinkLocal.selected}
+            data-error={sinkerror !== ''}
+            data-focus={sinkFieldsFocused}
             value={sinkLocal.width}
             onChange={(e) => {
               setsinkWidth(e.target.value);
-             
+
               handleInputChange('sink', 'width', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setsinkFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setsinkFieldFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Sink center"
-            style={{
-              ...inputStyle,
-              border: sinkLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: sinkLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='sink-input'
+            data-selected={sinkLocal.selected}
+            data-error={sinkerror !== ''}
+            data-focus={sinkFieldsFocused}
             value={sinkLocal.center}
             onChange={(e) => {
               setsinkCenter(e.target.value);
-              
+
               handleInputChange('sink', 'center', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setsinkFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setsinkFieldFocused(false);
             }}
           />
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px', width: '100%', maxWidth: '222px'}}>
+      <div className='BoxOuter'>
+        <div className='BoxInnerA'>
           <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('range')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={rangeLocal.selected === true ? (error && rangeLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <rect x="76.1562" y="78.6562" width="69.6875" height="55.6875" rx="3" stroke={rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="2" />
-            <path d="M134.06 93.9591C134.06 98.5676 129.942 102.363 124.785 102.363C119.628 102.363 115.51 98.5676 115.51 93.9591C115.51 89.3506 119.628 85.5556 124.785 85.5556C129.942 85.5556 134.06 89.3506 134.06 93.9591Z" stroke={rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
-            <path d="M134.06 119.041C134.06 123.649 129.942 127.444 124.785 127.444C119.628 127.444 115.51 123.649 115.51 119.041C115.51 114.432 119.628 110.637 124.785 110.637C129.942 110.637 134.06 114.432 134.06 119.041Z" stroke={rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
-            <path d="M106.489 93.9592C106.489 98.5677 102.37 102.363 97.2137 102.363C92.0569 102.363 87.9385 98.5677 87.9385 93.9592C87.9385 89.3507 92.0569 85.5557 97.2137 85.5557C102.37 85.5557 106.489 89.3507 106.489 93.9592Z" stroke={rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
-            <path d="M106.489 119.041C106.489 123.649 102.37 127.444 97.2137 127.444C92.0569 127.444 87.9385 123.649 87.9385 119.041C87.9385 114.432 92.0569 110.637 97.2137 110.637C102.37 110.637 106.489 114.432 106.489 119.041Z" stroke={rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z"
+              fill={
+                rangeerror && !rangeFieldsFocused
+                  ? '#F69898' // Case 1
+                  : rangeLocal.selected || rangeFieldsFocused
+                    ? '#84FFAE75' // Case 2
+                    : '#F9FAFB' // Case 3
+              } />
+            <rect x="76.1562" y="78.6562" width="69.6875" height="55.6875" rx="3" stroke={rangeerror || rangeFieldsFocused || rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="2" />
+            <path d="M134.06 93.9591C134.06 98.5676 129.942 102.363 124.785 102.363C119.628 102.363 115.51 98.5676 115.51 93.9591C115.51 89.3506 119.628 85.5556 124.785 85.5556C129.942 85.5556 134.06 89.3506 134.06 93.9591Z" stroke={rangeerror || rangeFieldsFocused || rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
+            <path d="M134.06 119.041C134.06 123.649 129.942 127.444 124.785 127.444C119.628 127.444 115.51 123.649 115.51 119.041C115.51 114.432 119.628 110.637 124.785 110.637C129.942 110.637 134.06 114.432 134.06 119.041Z" stroke={rangeerror || rangeFieldsFocused || rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
+            <path d="M106.489 93.9592C106.489 98.5677 102.37 102.363 97.2137 102.363C92.0569 102.363 87.9385 98.5677 87.9385 93.9592C87.9385 89.3507 92.0569 85.5557 97.2137 85.5557C102.37 85.5557 106.489 89.3507 106.489 93.9592Z" stroke={rangeerror || rangeFieldsFocused || rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
+            <path d="M106.489 119.041C106.489 123.649 102.37 127.444 97.2137 127.444C92.0569 127.444 87.9385 123.649 87.9385 119.041C87.9385 114.432 92.0569 110.637 97.2137 110.637C102.37 110.637 106.489 114.432 106.489 119.041Z" stroke={rangeerror || rangeFieldsFocused || rangeLocal.selected === true ? 'black' : '#615D5A'} stroke-width="0.75" />
           </svg>
 
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
 
 
           <input
             type="number"
             placeholder="Range width"
-            style={{
-              ...inputStyle,
-              border: rangeLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: rangeLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='range-input'
+            data-selected={rangeLocal.selected}
+            data-error={rangeerror !== ''}
+            data-focus={rangeFieldsFocused}
             value={rangeLocal.width}
             onChange={(e) => {
               setrangeWidth(e.target.value);
-             
+
               handleInputChange('range', 'width', e.target.value);
 
             }}
+            onFocus={() => {
+
+              setrangeFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setrangeFieldFocused(false);
+            }}
+
           />
 
           <input
             type="number"
             placeholder="Range center"
-            style={{
-              ...inputStyle,
-              border: rangeLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: rangeLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='range-input'
+            data-selected={rangeLocal.selected}
+            data-error={rangeerror !== ''}
+            data-focus={rangeFieldsFocused}
             value={rangeLocal.center}
             onChange={(e) => {
               setrangeCenter(e.target.value);
-             
+
               handleInputChange('range', 'center', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setrangeFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setrangeFieldFocused(false);
             }}
           />
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-        <div style={{ position: 'relative' , marginTop:'20px', width: '100%', maxWidth: '222px'}}>
+      <div className='BoxOuter'>
+        <div className='BoxInnerA'>
           <svg width="100%" height="auto" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
             onClick={() => toggleImageSelection('dish')}>
-            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={dishLocal.selected === true ? (error &&  dishLocal.selected ? '#FA6161' : '#84FFAE75') : "#F9FAFB"} />
-            <path d="M77.4688 74.5016V137.791" stroke={dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M77.4688 74.5016L142.72 74.334" stroke={dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M143.375 74.3281L142.657 137.791" stroke={dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M77.8994 93.2704L142.219 93.1875" stroke={dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
+              disherror && !dishFieldsFocused
+                ? '#F69898' // Case 1
+                : dishLocal.selected || dishFieldsFocused
+                  ? '#84FFAE75' // Case 2
+                  : '#F9FAFB' // Case 3
+            } />
+            <path d="M77.4688 74.5016V137.791" stroke={disherror || dishFieldsFocused || dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 74.5016L142.72 74.334" stroke={disherror || dishFieldsFocused || dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M143.375 74.3281L142.657 137.791" stroke={disherror || dishFieldsFocused || dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.8994 93.2704L142.219 93.1875" stroke={disherror || dishFieldsFocused || dishLocal.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
           </svg>
 
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='inputOuter'>
 
 
           <input
             type="number"
             placeholder="Dish width"
-            style={{
-              ...inputStyle,
-              border: dishLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: dishLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='dish-input'
+            data-selected={dishLocal.selected}
+            data-error={disherror !== ''}
+            data-focus={dishFieldsFocused}
             value={dishLocal.width}
             onChange={(e) => {
               setdishWidth(e.target.value);
-             
+
               handleInputChange('dish', 'width', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setdishFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setdishFieldFocused(false);
             }}
           />
 
           <input
             type="number"
             placeholder="Dish center"
-            style={{
-              ...inputStyle,
-              border: dishLocal.selected ? '2px solid black' : 'none',
-              backgroundColor: dishLocal.selected && !error ? '#84FFAE75' : '#F9FAFB',
-            }}
+            className='dish-input'
+            data-selected={dishLocal.selected}
+            data-error={disherror !== ''}
+            data-focus={dishFieldsFocused}
             value={dishLocal.center}
             onChange={(e) => {
               setdishCenter(e.target.value);
-          
+
               handleInputChange('dish', 'center', e.target.value);
 
+            }}
+            onFocus={() => {
+
+              setdishFieldFocused(true);
+            }}
+            onBlur={() => {
+
+              setdishFieldFocused(false);
             }}
           />
         </div>
       </div>
 
-      {error && (
-        <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>
+      {referror && (
+        <p className='error'>{referror}</p>
       )}
+      {sinkerror && (
+        <p className='error'>{sinkerror}</p>
+      )}
+      {rangeerror && (
+        <p className='error'>{rangeerror}</p>
+      )}
+      {disherror && (
+        <p className='error'>{disherror}</p>
+      )}
+      <div className="button-container">
+        <button
+          onClick={handleSubmit}
+          className=" h-12 mt-8 rounded-md text-white mb-12 buton"
 
-      <button
-        onClick={handleSubmit}
-        className="w-80 h-12 mt-4 rounded-md text-white"
-        style={{ background: '#7F56D9' }}
-      >
-        Submit Details
-      </button>
-    </div>
+        >
+          Submit Details
+        </button>
+      </div>
+    </motion.div>
   );
 };
 

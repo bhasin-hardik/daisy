@@ -1,27 +1,144 @@
-.layout-box{
-    width:295px;
-   height: 58px;
-    margin: 20px 0;
-    display: flex;
-   flex-direction: column;
-    justify-content:center;
-   background-color: #f9fafb;
+.layout-box {
+  width: 295px;
+  height: 58px;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  background-color: #f9fafb;
 }
+
+.containStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  margin-top: 110px;
+  padding: 0 20px;
+}
+
+.outerBox {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.innerBox {
+  width: 100%;
+  max-width: 449px;
+  height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.subheading {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #656362;
+}
+
+.wallDimBox {
+  width: 100%;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.layout-text {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  text-align: left;
+  margin: 8px;
+  opacity: 0.6;
+}
+
+.wallDimText {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  text-align: left;
+}
+
+.headingBox {
+  max-width: 426px;
+}
+
+.subheadingBox {
+  max-width: 449px;
+  margin-top: 10px;
+}
+
+.btnStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.outer-svg {
+  display: flex;
+  margin: 20px 20px;
+  gap: 30px;
+}
+
+.gridContainerStyle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  
+  padding: 0 20px;
+}
+
+.buton {
+  background: #7F56D9;
+}
+
 @media screen and (max-width: 640px) {
-    .layout-box {
-      width: 100%; /* Responsive 100% width for smaller screens */
-      height: auto;
-      margin: 10px 0; /* Adjust margin as needed */
-      
-    }
-    
-    .svg-class {
-        width: 30px; /* Set the width to 100% to match the container */
-        height: auto; /* Set the height to auto to maintain aspect ratio */
-        
-      }
-     
+  .layout-box {
+    width: 100%;
+    height: auto;
+    margin: 10px 0;
+  }
+
+  .svg-class {
+    width: 30px;
+    height: auto;
+  }
+}
+
+@media screen and (max-width:353px){
+  .btnStyle{
+      width: 224px;
   }
   
  
- 
+
+}

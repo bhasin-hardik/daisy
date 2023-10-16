@@ -1,0 +1,17 @@
+.main-contain{
+    margin-top: 80px;
+    
+}
+.boxer{
+    width: 100%;
+    max-width: 192px;
+    text-align: center;
+    margin: 0;
+}
+
+.buton{
+    width:100%;
+    max-width: 320px;
+    background: #7F56D9;
+}
+
