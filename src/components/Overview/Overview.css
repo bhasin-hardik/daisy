@@ -4,7 +4,7 @@
   margin: 20px 0;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
   background-color: #f9fafb;
 }
 
@@ -113,13 +113,14 @@
   gap: 20px;
   max-width: 100%;
   margin: 0 auto;
-  
+
   padding: 0 20px;
 }
 
 .buton {
   background: #7F56D9;
 }
+
 
 @media screen and (max-width: 640px) {
   .layout-box {
@@ -138,7 +139,7 @@
   .btnStyle{
       width: 224px;
   }
-  
- 
+
+
 
 }

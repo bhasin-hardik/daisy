@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from './Layout/Layout';
@@ -8,8 +8,8 @@ import Cabinet from './/Cabinet/Cabinet';
 import Appliance from './/Appliance/Appliance';
 import Overview from './Overview/Overview';
 const AnimatedRoutes: React.FC = () => {
-    const location = useLocation();
-    return (
+  const location = useLocation();
+  return (
         <AnimatePresence>
             <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Layout />} />
@@ -21,7 +21,6 @@ const AnimatedRoutes: React.FC = () => {
             </Routes>
         </AnimatePresence>
 
-    );
-
+  );
 };
 export default AnimatedRoutes;

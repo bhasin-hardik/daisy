@@ -41,7 +41,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange, onMeasurement
 
   return (
     <div className='box-1'>
-      <div className='box-2'> 
+      <div className='box-2'>
         <div className='wall-name'>
           {wallName}:
         </div>
@@ -51,12 +51,12 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange, onMeasurement
             id={`length_${wallName}`}
             name={`length_${wallName}`}
             className="border p-2 input-text"
-            
-            placeholder={`Enter Wall Length`}
+
+            placeholder={'Enter Wall Length'}
             value={length === '' ? '' : String(length)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            onChange={(e) => { 
+            onChange={(e) => {
               const newValue = e.target.value.trim();
               setLength(newValue === '' ? '' : parseFloat(newValue));
             }}
@@ -66,7 +66,7 @@ const Wall: React.FC<WallProps> = ({ wallName, onValidationChange, onMeasurement
             id={`height_${wallName}`}
             name={`height_${wallName}`}
             className="border p-2 input-text spcl"
-            placeholder={`Enter Wall Height`}
+            placeholder={'Enter Wall Height'}
             value={height === '' ? '' : String(height)}
             onFocus={handleFocus}
             onBlur={handleBlur}

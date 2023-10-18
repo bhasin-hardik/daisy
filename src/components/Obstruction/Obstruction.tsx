@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Obstruction.css'
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 const Obstruction: React.FC = () => {
   const navigate = useNavigate();
 
-  const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') || 'null');
+  const wallsNeededFromStorage = JSON.parse(localStorage.getItem('wallsNeeded') ?? 'null');
   const numWalls = wallsNeededFromStorage;
   const { count } = useParams<{ count: string }>();
   const wallLetter = count ? String.fromCharCode(64 + parseInt(count)) : '';
@@ -19,33 +19,31 @@ const Obstruction: React.FC = () => {
     wallIndex = parseInt(count) - 1;
   }
 
-
-
   const defaultData = {
     door: {
       selected: false,
       height: '',
       width: '',
-      center: '',
+      center: ''
     },
     window: {
       selected: false,
       height: '',
       width: '',
-      center: '',
+      center: ''
     },
     beam: {
       selected: false,
       height: '',
       width: '',
-      center: '',
+      center: ''
     },
     other: {
       selected: false,
       height: '',
       width: '',
-      center: '',
-    },
+      center: ''
+    }
   };
   const [wallObstructionDatafromLocal, setWallObstructionDatafromLocal] = useState(defaultData);
   const [doorFieldsFocused, setDoorFieldsFocused] = useState(false);
@@ -56,12 +54,10 @@ const Obstruction: React.FC = () => {
     const savedData = localStorage.getItem(`obstruction_${wallLetter}`);
     if (savedData) {
       setWallObstructionDatafromLocal(JSON.parse(savedData));
-    }
-    else {
+    } else {
       setWallObstructionDatafromLocal(defaultData);
     }
   }, [wallLetter]);
-
 
   const updateLocalStorageData = (data: object) => {
     localStorage.setItem(`obstruction_${wallLetter}`, JSON.stringify(data));
@@ -95,7 +91,6 @@ const Obstruction: React.FC = () => {
   const [otherWidth, setOtherWidth] = useState(otherDataFromLocalStorage.width || '');
   const [otherCenter, setOtherCenter] = useState(otherDataFromLocalStorage.center || '');
 
-
   const [doorerror, setDoorError] = useState('');
   const [windowerror, setWindowError] = useState('');
   const [beamerror, setBeamError] = useState('');
@@ -115,8 +110,6 @@ const Obstruction: React.FC = () => {
   console.log(otherHeight);
   console.log(otherWidth);
   console.log(otherCenter);
-
-
 
   const handleSubmit = () => {
     setDoorError(''); // Clear any previous error messages
@@ -177,16 +170,12 @@ const Obstruction: React.FC = () => {
       return;
     }
 
-
     if (count) {
-
       const nextNumWalls = parseInt(count) + 1; // Increment the parameter
       if (numWalls > 1) {
         if (count && nextNumWalls <= numWalls) {
-
           navigate(`/obstruction/${nextNumWalls}`); // Navigate to the next Obstruction component
         } else {
-
           navigate('/appliance/1');
         }
       } else {
@@ -197,7 +186,6 @@ const Obstruction: React.FC = () => {
     }
   };
 
-
   const getWallHeading = (wallNumber: number) => {
     const wallAlphabet = String.fromCharCode(65 + wallNumber - 1);
     return `Wall ${wallAlphabet}`;
@@ -205,9 +193,8 @@ const Obstruction: React.FC = () => {
 
   // Use the function to get the wall heading
   let wallHeading;
-  if (count != undefined) {
+  if (count !== undefined) {
     wallHeading = getWallHeading(parseInt(count));
-
   }
   const handleInputChange = (obstructionType: string, field: string, value: string) => {
     setWallObstructionDatafromLocal((prevData: any) => {
@@ -216,7 +203,6 @@ const Obstruction: React.FC = () => {
       updateLocalStorageData(newData);
       return newData;
     });
-
   };
   const toggleImageSelection = (obstructionType: string) => {
     setDoorError(''); // Clear any previous error messages
@@ -239,13 +225,11 @@ const Obstruction: React.FC = () => {
         setDoorSelected(!doorSelected);
         doorDataFromLocalStorage.selected = !doorDataFromLocalStorage.selected;
 
-
         if (!doorSelected) {
           // If door is deselected, clear input fields
           setDoorHeight('');
           setDoorWidth('');
           setDoorCenter('');
-
         }
         break;
       case 'window':
@@ -257,7 +241,6 @@ const Obstruction: React.FC = () => {
           setWindowHeight('');
           setWindowWidth('');
           setWindowCenter('');
-
         }
         break;
       case 'beam':
@@ -269,7 +252,6 @@ const Obstruction: React.FC = () => {
           setBeamHeight('');
           setBeamWidth('');
           setBeamCenter('');
-
         }
         break;
       case 'other':
@@ -281,7 +263,6 @@ const Obstruction: React.FC = () => {
           setOtherHeight('');
           setOtherWidth('');
           setOtherCenter('');
-
         }
         break;
       default:
@@ -289,10 +270,10 @@ const Obstruction: React.FC = () => {
     }
   };
   return (
-    <motion.div className="min-h-screen flex flex-col items-center justify-center mainContainer"  
-    initial={{opacity:0}}
-    animate={{opacity:1}}
-    exit={{opacity:0}}>
+    <motion.div className="min-h-screen flex flex-col items-center justify-center mainContainer"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}>
       <div className="bg-white p-8 text-center containerStyle">
         <h1 className='heading'>Obstructions: {wallHeading}</h1>
         <p className='subheading'>Please select any obstructions on your wall.</p>
@@ -301,7 +282,7 @@ const Obstruction: React.FC = () => {
       <div className='BoxOuter'>
         <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
-            onClick={() => toggleImageSelection('door')}>
+            onClick={() => { toggleImageSelection('door'); }}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
               doorerror && !doorFieldsFocused
                 ? '#F69898' // Case 1
@@ -309,12 +290,11 @@ const Obstruction: React.FC = () => {
                   ? '#84FFAE75' // Case 2
                   : '#F9FAFB' // Case 3
             } />
-            <path d="M77.4688 45.8155V166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M77.4688 45.8155L142.72 45.4941" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M143.375 45.4844L142.657 166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M77.4688 45.8155V166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
+            <path d="M77.4688 45.8155L142.72 45.4941" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
+            <path d="M143.375 45.4844L142.657 166.634" stroke={doorerror || doorFieldsFocused || doorDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
             <path d="M137.233 100.587C137.233 101.476 136.423 102.198 135.422 102.198C134.422 102.198 133.611 101.476 133.611 100.587C133.611 99.6971 134.422 98.9758 135.422 98.9758C136.423 98.9758 137.233 99.3839 137.233 100.587Z" fill="#615D5A" />
           </svg>
-
 
         </div>
 
@@ -322,7 +302,7 @@ const Obstruction: React.FC = () => {
           <input
             type="number"
             placeholder="Door height"
-            className='door-input' 
+            className='door-input'
             data-selected={doorDataFromLocalStorage.selected}
             data-error={doorerror !== ''}
             data-focus={doorFieldsFocused}
@@ -349,7 +329,7 @@ const Obstruction: React.FC = () => {
             data-selected={doorDataFromLocalStorage.selected}
             data-error={doorerror !== ''}
             data-focus={doorFieldsFocused}
-            
+
             value={doorDataFromLocalStorage.width}
             onChange={(e) => {
               // Update the context directly here
@@ -391,11 +371,11 @@ const Obstruction: React.FC = () => {
           />
         </div>
       </div>
- 
+
       <div className='BoxOuter'>
         <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg"
-            onClick={() => toggleImageSelection('window')}>
+            onClick={() => { toggleImageSelection('window'); }}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
               windowerror && !windowFieldsFocused
                 ? '#F69898' // Case 1
@@ -403,13 +383,11 @@ const Obstruction: React.FC = () => {
                   ? '#84FFAE75' // Case 2
                   : '#F9FAFB' // Case 3
             } />
-            <path d="M62.4375 80.0127V132.005" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M62.4375 80.0127L160.063 79.875" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965V80.9732" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
-            <path d="M160.063 132.965L62.4373 133.103" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} stroke-width="3" stroke-linecap="round" />
+            <path d="M62.4375 80.0127V132.005" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
+            <path d="M62.4375 80.0127L160.063 79.875" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
+            <path d="M160.063 132.965V80.9732" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
+            <path d="M160.063 132.965L62.4373 133.103" stroke={windowerror || windowFieldsFocused || windowDataFromLocalStorage.selected === true ? 'black' : '#615D5A'} strokeWidth="3" strokeLinecap="round" />
           </svg>
-
-
 
         </div>
 
@@ -421,7 +399,7 @@ const Obstruction: React.FC = () => {
             data-selected={windowDataFromLocalStorage.selected}
             data-error={windowerror !== ''}
             data-focus={windowFieldsFocused}
-            
+
             value={windowDataFromLocalStorage.height}
             onChange={(e) => {
               setWindowHeight(e.target.value);
@@ -490,7 +468,7 @@ const Obstruction: React.FC = () => {
       <div className='BoxOuter'>
         <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 213" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-            onClick={() => toggleImageSelection('beam')}>
+            onClick={() => { toggleImageSelection('beam'); }}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V206C222 209.866 218.866 213 215 213H7C3.134 213 0 209.866 0 206V7Z" fill={
               beamerror && !beamFieldsFocused
                 ? '#F69898' // Case 1
@@ -508,7 +486,6 @@ const Obstruction: React.FC = () => {
             </defs>
           </svg>
 
-
         </div>
 
         <div className='inputOuter'>
@@ -519,7 +496,7 @@ const Obstruction: React.FC = () => {
             data-selected={beamDataFromLocalStorage.selected}
             data-error={beamerror !== ''}
             data-focus={beamFieldsFocused}
-            
+
             value={beamDataFromLocalStorage.height}
             onChange={(e) => {
               // Update the context directly here
@@ -590,7 +567,7 @@ const Obstruction: React.FC = () => {
       <div className='BoxOuter'>
         <div className='BoxInner'>
           <svg width="100%" height="60%" viewBox="0 0 222 53" fill="none" xmlns="http://www.w3.org/2000/svg"
-            onClick={() => toggleImageSelection('other')}>
+            onClick={() => { toggleImageSelection('other'); }}>
             <path d="M0 7C0 3.13401 3.13401 0 7 0H215C218.866 0 222 3.13401 222 7V46C222 49.866 218.866 53 215 53H7C3.134 53 0 49.866 0 46V7Z" fill={
               othererror && !otherFieldsFocused
                 ? '#F69898' // Case 1
@@ -697,7 +674,7 @@ const Obstruction: React.FC = () => {
       <button
         onClick={handleSubmit}
         className="h-12 mt-8 rounded-md text-white mb-12 buton"
-        
+
       >
         Submit Details
       </button>
